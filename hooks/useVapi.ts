@@ -22,6 +22,8 @@ export function useLatestRef<T>(value: T) {
     return ref;
 }
 
+
+
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY;
 const TIMER_INTERVAL_MS = 1000;
 const SECONDS_PER_MINUTE = 60;

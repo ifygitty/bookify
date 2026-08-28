@@ -8,6 +8,8 @@ import BookSegment from "@/database/models/book-segment.model";
 import mongoose from "mongoose";
 import {getUserPlan} from "@/lib/subscription.server";
 
+import { revalidatePath } from "next/cache";
+
 export const getAllBooks = async (search?: string) => {
     try {
         await connectToDatabase();
@@ -26,6 +28,8 @@ export const getAllBooks = async (search?: string) => {
         }
 
         const books = await Book.find(query).sort({ createdAt: -1 }).lean();
+
+        revalidatePath("/")
 
         return {
             success: true,
