@@ -68,6 +68,8 @@ export const connectToDatabase = async () => {
     });
   }
 
+
+
   try {
     cached.conn = await cached.promise;
     console.info("Connected to MongoDB");

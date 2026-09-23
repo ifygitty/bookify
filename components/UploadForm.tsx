@@ -42,8 +42,10 @@ const UploadForm = () => {
     });
 
     const onSubmit = async (data: BookUploadFormValues) => {
+        console.log("clicked")
         if(!userId) {
-           return toast.error("Please login to upload books");
+           toast.error("Please login to upload books");
+           return;
         }
 
         setIsSubmitting(true);
@@ -57,6 +59,7 @@ const UploadForm = () => {
                 toast.info("Book with same title already exists.");
                 form.reset()
                 router.push(`/books/${existsCheck.book.slug}`)
+                setIsSubmitting(false);
                 return;
             }
 
@@ -67,6 +70,7 @@ const UploadForm = () => {
 
             if(parsedPDF.content.length === 0) {
                 toast.error("Failed to parse PDF. Please try again with a different file.");
+                setIsSubmitting(false);
                 return;
             }
 
@@ -116,6 +120,7 @@ const UploadForm = () => {
                 if (book.isBillingError) {
                     router.push("/subscriptions");
                 }
+                setIsSubmitting(false);
                 return;
             }
 
@@ -123,6 +128,7 @@ const UploadForm = () => {
                 toast.info("Book with same title already exists.");
                 form.reset()
                 router.push(`/books/${book.data.slug}`)
+                setIsSubmitting(false);
                 return;
             }
 

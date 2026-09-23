@@ -7,11 +7,13 @@ import Image from "next/image";
 import Transcript from "@/components/Transcript";
 import {toast} from "sonner";
 
+import {useAuth} from "@clerk/nextjs";
 import {useRouter} from "next/navigation";
 import {useEffect} from "react";
 
 const VapiControls = ({ book }: { book: IBook }) => {
     const { status, isActive, messages, currentMessage, currentUserMessage, duration, start, stop, clearError, limitError, isBillingError, maxDurationSeconds } = useVapi(book)
+    const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -19,12 +21,28 @@ const VapiControls = ({ book }: { book: IBook }) => {
             toast.error(limitError);
             if (isBillingError) {
                 router.push("/subscriptions");
-            } else {
-                router.push("/");
             }
             clearError();
         }
     }, [isBillingError, limitError, router, clearError]);
+
+    const handleMicClick = () => {
+        if (!isLoaded) {
+            toast.info("Checking your sign-in status. Please try again in a moment.");
+            return;
+        }
+
+        if (!isSignedIn) {
+            toast.error("Please sign in before starting a voice session.");
+            return;
+        }
+
+        if (isActive) {
+            stop();
+        } else {
+            start();
+        }
+    };
 
     const formatDuration = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -64,7 +82,7 @@ const VapiControls = ({ book }: { book: IBook }) => {
                                 <div className="absolute inset-0 rounded-full bg-white animate-ping opacity-75" />
                             )}
                             <button
-                                onClick={isActive ? stop : start}
+                                onClick={handleMicClick}
                                 disabled={status === 'connecting'}
                                 className={`vapi-mic-btn shadow-md !w-[60px] !h-[60px] z-10 ${isActive ? 'vapi-mic-btn-active' : 'vapi-mic-btn-inactive'}`}
                             >

@@ -29,7 +29,7 @@ export const getAllBooks = async (search?: string) => {
 
         const books = await Book.find(query).sort({ createdAt: -1 }).lean();
 
-        revalidatePath("/")
+        // revalidatePath("/")
 
         return {
             success: true,
