@@ -58,6 +58,7 @@ export function useVapi(book: IBook) {
     const startTimeRef = useRef<number | null>(null);
     const sessionIdRef = useRef<string | null>(null);
     const isStoppingRef = useRef(false);
+    const hasCallStartedRef = useRef(false);
 
     // Keep refs in sync with latest values for use in callbacks
     const maxDurationSeconds = limits?.maxDurationPerSession ? limits.maxDurationPerSession * 60 : (15 * 60);
@@ -70,6 +71,7 @@ export function useVapi(book: IBook) {
         const handlers = {
             'call-start': () => {
                 isStoppingRef.current = false;
+                hasCallStartedRef.current = true;
                 setStatus('starting'); // AI speaks first, wait for it
                 setCurrentMessage('');
                 setCurrentUserMessage('');
@@ -97,6 +99,7 @@ export function useVapi(book: IBook) {
 
             'call-end': () => {
                 // Don't reset isStoppingRef here - delayed events may still fire
+                hasCallStartedRef.current = false;
                 setStatus('idle');
                 setCurrentMessage('');
                 setCurrentUserMessage('');
@@ -173,7 +176,18 @@ export function useVapi(book: IBook) {
             },
 
             error: (error: Error) => {
-                console.error('Vapi error:', error);
+                const errorMessage = error?.message?.toLowerCase() || '';
+
+                // Vapi can emit this after call-end has already completed.
+                if (!hasCallStartedRef.current && errorMessage.includes('meeting has ended')) {
+                    return;
+                }
+
+                console.error('Vapi error:', {
+                    name: error?.name,
+                    message: error?.message,
+                    cause: error?.cause,
+                });
                 // Don't reset isStoppingRef here - delayed events may still fire
                 setStatus('idle');
                 setCurrentMessage('');
@@ -194,7 +208,6 @@ export function useVapi(book: IBook) {
                 }
 
                 // Show user-friendly error message
-                const errorMessage = error.message?.toLowerCase() || '';
                 if (errorMessage.includes('timeout') || errorMessage.includes('silence')) {
                     setLimitError('Session ended due to inactivity. Click the mic to start again.');
                 } else if (errorMessage.includes('network') || errorMessage.includes('connection')) {
@@ -275,6 +288,12 @@ export function useVapi(book: IBook) {
             });
         } catch (err) {
             console.error('Failed to start call:', err);
+            if (sessionIdRef.current) {
+                await endVoiceSession(sessionIdRef.current, 0).catch((cleanupError) =>
+                    console.error('Failed to clean up voice session:', cleanupError),
+                );
+                sessionIdRef.current = null;
+            }
             setStatus('idle');
             setLimitError('Failed to start voice session. Please try again.');
         }

@@ -6,20 +6,28 @@ import {escapeRegex, generateSlug, serializeData} from "@/lib/utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
 import mongoose from "mongoose";
-import {getUserPlan} from "@/lib/subscription.server";
-
-import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs/server";
 
 export const getAllBooks = async (search?: string) => {
     try {
         await connectToDatabase();
 
-        let query = {};
+        const { userId } = await auth();
+
+        if (!userId) {
+            return {
+                success: true,
+                data: [],
+            };
+        }
+
+        let query: Record<string, unknown> = { clerkId: userId };
 
         if (search) {
             const escapedSearch = escapeRegex(search);
             const regex = new RegExp(escapedSearch, 'i');
             query = {
+                clerkId: userId,
                 $or: [
                     { title: { $regex: regex } },
                     { author: { $regex: regex } },
@@ -75,9 +83,14 @@ export const createBook = async (data: CreateBook) => {
 
         const slug = generateSlug(data.title);
 
-        const existingBook = await Book.findOne({slug}).lean();
+        const { userId } = await auth();
 
-    
+        if (!userId || userId !== data.clerkId) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const existingBook = await Book.findOne({slug, clerkId: userId}).lean();
+
         if(existingBook) {
             return {
                 success: true,
@@ -89,13 +102,6 @@ export const createBook = async (data: CreateBook) => {
         // Todo: Check subscription limits before creating a book
         const { getUserPlan } = await import("@/lib/subscription.server");
         const { PLAN_LIMITS } = await import("@/lib/subscription-constants");
-
-        const { auth } = await import("@clerk/nextjs/server");
-        const { userId } = await auth();
-
-        if (!userId || userId !== data.clerkId) {
-            return { success: false, error: "Unauthorized" };
-        }
 
         const plan = await getUserPlan();
         const limits = PLAN_LIMITS[plan];
@@ -133,7 +139,13 @@ export const getBookBySlug = async (slug: string) => {
     try {
         await connectToDatabase();
 
-        const book = await Book.findOne({ slug }).lean();
+        const { userId } = await auth();
+
+        if (!userId) {
+            return { success: false, error: 'Unauthorized' };
+        }
+
+        const book = await Book.findOne({ slug, clerkId: userId }).lean();
 
         if (!book) {
             return { success: false, error: 'Book not found' };
