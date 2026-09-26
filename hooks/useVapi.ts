@@ -304,16 +304,41 @@ export function useVapi(book: IBook) {
         getVapi().stop();
     }, []);
 
-    const clearError = useCallback(() => {
-        setLimitError(null);
-        setIsBillingError(false);
-    }, []);
-
     const isActive =
         status === 'starting' ||
         status === 'listening' ||
         status === 'thinking' ||
         status === 'speaking';
+
+    const sendText = useCallback((text: string) => {
+        const content = text.trim();
+
+        if (!content || !isActive) return false;
+
+        getVapi().send({
+            type: 'add-message',
+            message: {
+                role: 'user',
+                content,
+            },
+        });
+        setMessages((previousMessages) => {
+            const alreadyAdded = previousMessages.some(
+                (message) => message.role === 'user' && message.content === content,
+            );
+
+            return alreadyAdded
+                ? previousMessages
+                : [...previousMessages, { role: 'user', content }];
+        });
+        setStatus('thinking');
+        return true;
+    }, [isActive]);
+
+    const clearError = useCallback(() => {
+        setLimitError(null);
+        setIsBillingError(false);
+    }, []);
 
     // Calculate remaining time
     // const maxDurationSeconds = limits.maxSessionMinutes * SECONDS_PER_MINUTE;
@@ -330,6 +355,7 @@ export function useVapi(book: IBook) {
         duration,
         start,
         stop,
+        sendText,
         limitError,
         isBillingError,
         maxDurationSeconds,
