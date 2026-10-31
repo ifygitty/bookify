@@ -1,28 +1,52 @@
-import type { Metadata } from "next";
-import { IBM_Plex_Serif, Mona_Sans} from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import {Toaster} from "@/components/ui/sonner";
 
-
-const ibmPlexSerif = IBM_Plex_Serif({
-    variable: "--font-ibm-plex-serif",
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-    display: 'swap'
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
-const monaSans = Mona_Sans({
-    variable: '--font-mona-sans',
-    subsets: ['latin'],
-    display: 'swap'
-})
-
 export const metadata: Metadata = {
-  title: "Bookified",
-  description: "Transform your books into interactive AI conversations. Upload PDFs, and chat with your books using voice.",
+  title: "Mentor",
+  description: "Your personal AI study companion for understanding course materials, practicing, and staying on track.",
+  applicationName: "Mentor",
+  icons: {
+    icon: "/assets/mentor-icon.png",
+    apple: "/assets/mentor-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#071426",
+  colorScheme: "dark",
+};
+
+const clerkAppearance = {
+  layout: {
+    logoImageUrl: "/assets/mentor-icon.png",
+  },
+  variables: {
+    colorPrimary: "#D4AF37",
+    colorBackground: "#102440",
+    colorText: "#F4F6FA",
+    colorTextSecondary: "#A8B4C7",
+    colorTextOnPrimaryBackground: "#071426",
+    colorInputBackground: "#0B1B32",
+    colorInputText: "#F4F6FA",
+    colorNeutral: "#F4F6FA",
+    colorDanger: "#F87171",
+    colorSuccess: "#34D399",
+    colorWarning: "#FBBF24",
+    borderRadius: "0.75rem",
+  },
 };
 
 export default function RootLayout({
@@ -31,10 +55,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-        <html lang="en">
+    <ClerkProvider appearance={clerkAppearance}>
+        <html lang="en" className={`dark ${inter.variable}`}>
           <body
-            className={`${ibmPlexSerif.variable} ${monaSans.variable} relative font-sans antialiased`}
+            className="relative font-sans antialiased"
           >
             <Navbar />
             {children}
@@ -44,5 +68,6 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
+
 
  

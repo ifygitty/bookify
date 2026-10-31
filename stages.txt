@@ -1,0 +1,139 @@
+stage 1
+
+Read , lines 1 to 180
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\components\\CourseLibrary.tsx",
+  "view_range": [
+    1,
+    180
+  ]
+}
+
+Find files matching `app/(root)/courses/**/*.tsx`
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\lib\\blob.ts"
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\lib\\openai.ts"
+}
+
+Search for `export default|export async function|export function|redirect\(|getOpenAIClie...`
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\(root)\\courses\\[courseId]\\page.tsx"
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\(root)\\courses\\page.tsx"
+}
+
+Read , lines 1 to 200
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\api\\courses\\[courseId]\\chat\\route.ts",
+  "view_range": [
+    1,
+    200
+  ]
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\api\\upload\\route.ts"
+}
+
+Read , lines 1 to 150
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\api\\courses\\route.ts",
+  "view_range": [
+    1,
+    150
+  ]
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\api\\courses\\[courseId]\\materials\\[materialId]\\route.ts"
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\database\\models\\course.model.ts"
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\database\\models\\course-chat-message.model.ts"
+}
+
+Read , lines 130 to 299
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\api\\courses\\[courseId]\\chat\\route.ts",
+  "view_range": [
+    130,
+    299
+  ]
+}
+
+Read , lines 180 to 312
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\components\\CourseStudyPage.tsx",
+  "view_range": [
+    180,
+    312
+  ]
+}
+
+Read 
+Completed with input: {
+  "path": "C:\\Users\\USER\\testing bookified\\app\\(root)\\page.tsx"
+}
+
+Search for `export default async function|export async function (GET|POST)|export functio...`
+
+## What we’ve built
+
+Bookified now has a **text-first course study workspace**. You can create a subject such as ACC 101, add up to five PDFs, select one of those PDFs, and chat with an AI tutor that searches the selected material. The course conversation is saved, and the tutor periodically keeps a short learning memory for that PDF.
+
+## How to try it
+
+1. Start the app with `npm run dev` and open `http://localhost:3000`. The home page sends you to `/courses`.
+2. Sign in, create a course, and open it.
+3. Add a PDF. Once it has been processed, select it from the course-material buttons.
+4. Ask a question in the chat. You can also open the selected PDF from the study page.
+5. Switch to another PDF in the same course; its conversation and learning memory are kept separately.
+
+The private Blob token is read from `BOOKIFY_PRIVATE_READ_WRITE_TOKEN`. Keep its value in your local environment file—don’t paste it into chat or expose it with a `NEXT_PUBLIC_` variable. The store ID does not need to be set separately by the app.
+
+## The code, in the order it works
+
+| Step | Code | What it does |
+|---|---|---|
+| 1. Start page | `app/(root)/page.tsx` | Redirects `/` to the courses dashboard. |
+| 2. Course dashboard | `app/(root)/courses/page.tsx` | Requires sign-in, loads your courses from MongoDB, and displays the dashboard. |
+| 3. Create a course | `components/CourseLibrary.tsx` | Shows the create-course form and sends the course name to the API. |
+| 4. Create course API | `app/api/courses/route.ts` | Checks the signed-in user and course name, creates an OpenAI file-search store for the course, and saves the course in MongoDB. |
+| 5. Course data model | `database/models/course.model.ts` | Defines the course, its PDF-material records, and each material’s learning memory. |
+| 6. Course study screen | `app/(root)/courses/[courseId]/page.tsx` | Loads a course that belongs to the signed-in user and renders its study page. |
+| 7. Upload and chat interface | `components/CourseStudyPage.tsx` | Handles PDF selection and upload, material switching, loading saved chat, and sending questions. The five-PDF limit is also displayed here. |
+| 8. Upload-token endpoint | `app/api/upload/route.ts` | Verifies the user and asks Vercel Blob for a short-lived token so the browser can upload the PDF. |
+| 9. Private Blob token helper | `lib/blob.ts` | Chooses the private-store token first, then falls back to the older Blob token variable names. |
+| 10. Process and index the PDF | `app/api/courses/[courseId]/materials/route.ts` | Checks course ownership and the five-file limit, reads and validates the temporary Blob PDF, sends it to OpenAI for indexing, then saves its metadata. The temporary Blob copy is deleted after processing; OpenAI retains the indexed file for tutor use. |
+| 11. OpenAI client | `lib/openai.ts` | Creates the server-side OpenAI client using `OPENAI_API_KEY`. The key is not meant to be exposed in browser code. |
+| 12. Ask the tutor | `app/api/courses/[courseId]/chat/route.ts` | Checks course and material ownership, searches the selected PDF, generates the answer, saves the user and assistant messages, and returns citations. |
+| 13. Chat-history model | `database/models/course-chat-message.model.ts` | Stores messages separately by user, course, and PDF so each material has its own conversation. |
+| 14. Learning memory | `app/api/courses/[courseId]/chat/route.ts` | Updates a short memory of learning preferences, strengths, and difficult concepts every ten conversation turns. |
+| 15. Open the PDF | `app/api/courses/[courseId]/materials/[materialId]/route.ts` | Authenticates the user and streams the selected PDF from OpenAI for viewing. |
+
+### What the AI does with a question
+
+The chat API sends the tutor the recent conversation and instructions to explain concepts clearly, show calculation steps for subjects such as math and accounting, and avoid inventing claims about the PDF. It searches the **selected material only**, using a material ID filter, so another PDF in the course isn’t mixed into the answer.
+
+### What is not part of this course workspace yet
+
+The tutor in Courses is currently **text-based**. The older book library and Vapi voice experience remain separate; voice chat, quizzes, flashcards, study planning, reminders, and progress analytics have not been built into the course workflow yet.

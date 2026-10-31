@@ -1,0 +1,596 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run quiz validation regression tests",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint quiz validation fix",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"app/api/courses/[courseId]/quizzes/route.ts",
+				"lib/course-quiz.ts",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build quiz generation fix",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run quiz regression tests",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint quiz source mapping",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"lib/course-quiz.ts",
+				"app/api/courses/[courseId]/quizzes/route.ts",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build quiz source mapping",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test citation retry changes",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint citation retry changes",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"app/api/courses/[courseId]/quizzes/route.ts",
+				"lib/course-quiz.ts",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build quiz citation retry",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Diagnose quiz build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify quiz retry build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint quiz source retry",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"app/api/courses/[courseId]/quizzes/route.ts",
+				"lib/course-quiz.ts",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test quiz source retry",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final quiz retry build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint flashcard feature",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"components/CourseStudyPage.tsx",
+				"components/CourseFlashcardCenter.tsx",
+				"components/CourseQuizCenter.tsx",
+				"app/api/courses/[courseId]/flashcards/route.ts",
+				"app/api/courses/[courseId]/flashcards/generate/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/[cardId]/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/[cardId]/review/route.ts",
+				"app/api/courses/[courseId]/quizzes/[quizId]/flashcards/route.ts",
+				"app/api/courses/[courseId]/route.ts",
+				"app/api/courses/[courseId]/materials/[materialId]/route.ts",
+				"lib/flashcards.ts",
+				"lib/flashcard-api.ts",
+				"database/models/flashcard-deck.model.ts",
+				"database/models/flashcard.model.ts",
+				"database/models/flashcard-review.model.ts",
+				"database/models/flashcard-generation.model.ts",
+				"tests/flashcards.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck flashcard changes",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Flashcard unit tests",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/flashcards.test.mjs",
+				"tests/course-quiz.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint flashcard implementation",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"components/CourseStudyPage.tsx",
+				"components/CourseFlashcardCenter.tsx",
+				"components/CourseQuizCenter.tsx",
+				"app/api/courses/[courseId]/flashcards/route.ts",
+				"app/api/courses/[courseId]/flashcards/generate/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/[cardId]/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/[cardId]/review/route.ts",
+				"app/api/courses/[courseId]/quizzes/[quizId]/flashcards/route.ts",
+				"app/api/courses/[courseId]/route.ts",
+				"app/api/courses/[courseId]/materials/[materialId]/route.ts",
+				"lib/flashcards.ts",
+				"lib/flashcard-api.ts",
+				"database/models/flashcard-deck.model.ts",
+				"database/models/flashcard.model.ts",
+				"database/models/flashcard-review.model.ts",
+				"database/models/flashcard-generation.model.ts",
+				"tests/flashcards.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck flashcard implementation",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build flashcard feature",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Standalone TypeScript check",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--pretty",
+				"false"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run TypeScript validation",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--pretty",
+				"false"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint final flashcard files",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"components/CourseStudyPage.tsx",
+				"components/CourseFlashcardCenter.tsx",
+				"components/CourseQuizCenter.tsx",
+				"app/api/courses/[courseId]/flashcards/route.ts",
+				"app/api/courses/[courseId]/flashcards/generate/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/[cardId]/route.ts",
+				"app/api/courses/[courseId]/flashcards/decks/[deckId]/cards/[cardId]/review/route.ts",
+				"app/api/courses/[courseId]/quizzes/[quizId]/flashcards/route.ts",
+				"app/api/courses/[courseId]/route.ts",
+				"app/api/courses/[courseId]/materials/[materialId]/route.ts",
+				"lib/flashcards.ts",
+				"lib/flashcard-api.ts",
+				"database/models/flashcard-deck.model.ts",
+				"database/models/flashcard.model.ts",
+				"database/models/flashcard-review.model.ts",
+				"database/models/flashcard-generation.model.ts",
+				"tests/flashcards.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run all project tests",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run focused project test files",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-chat-selection.test.mjs",
+				"tests/course-material-extraction.test.mjs",
+				"tests/course-quiz.test.mjs",
+				"tests/flashcards.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run project ESLint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final all tests",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-chat-selection.test.mjs",
+				"tests/course-material-extraction.test.mjs",
+				"tests/course-quiz.test.mjs",
+				"tests/flashcards.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final project lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final production build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check flashcard diff whitespace",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"diff",
+				"--check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final flashcard regressions",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/course-chat-selection.test.mjs",
+				"tests/course-material-extraction.test.mjs",
+				"tests/course-quiz.test.mjs",
+				"tests/flashcards.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final lint run",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build final flashcards",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Temporary progress tests",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--experimental-strip-types",
+				"--test",
+				"tests/study-progress.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Temporary progress lint",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"eslint",
+				"lib/study-progress.ts",
+				"app/api/progress/route.ts",
+				"components/StudyProgressDashboard.tsx",
+				"components/Navbar.tsx",
+				"tests/study-progress.test.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Temporary progress build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "mkdir-revision-routes",
+			"type": "shell",
+			"command": "New-Item -ItemType Directory -Force -LiteralPath 'app/api/courses/[courseId]/revision-plans/[planId]/tasks/[taskId]'"
+		},
+		{
+			"label": "mkdir-revision-routes-2",
+			"type": "shell",
+			"command": "New-Item -ItemType Directory -Force -Path 'app/api/courses/[courseId]/revision-plans/[planId]/tasks/[taskId]'"
+		},
+		{
+			"label": "test-revision-plan",
+			"type": "shell",
+			"command": "node --experimental-strip-types --test tests/revision-plan.test.mjs tests/course-outline.test.mjs"
+		},
+		{
+			"label": "tsc-revision",
+			"type": "shell",
+			"command": "npx tsc --noEmit --pretty false 2>&1 | Select-String -Pattern 'revision|CourseStudyPage|course-outline|CourseOutlineCenter|outline/generate|courses/\\[courseId\\]/route'"
+		},
+		{
+			"label": "tsc-to-file",
+			"type": "shell",
+			"command": "npx tsc --noEmit --pretty false > tsc-out.tmp.txt 2>&1; Write-Output \"TSC_DONE exit=$LASTEXITCODE\""
+		},
+		{
+			"label": "checks-2",
+			"type": "shell",
+			"command": "npx tsc --noEmit --pretty false 2>&1 | Out-String -Width 400 | Set-Content -Encoding utf8 tsc-out2.tmp.txt; npx eslint components/CourseRevisionPlanner.tsx components/CourseStudyPage.tsx components/CourseOutlineCenter.tsx lib/revision-plan.ts lib/revision-plan-server.ts database/models/revision-plan.model.ts 'app/api/courses/[[]courseId]/revision-plans' 'app/api/courses/[[]courseId]/route.ts' 'app/api/courses/[[]courseId]/outline/generate/route.ts' 2>&1 | Out-String -Width 300 | Set-Content -Encoding utf8 eslint-out.tmp.txt; Write-Output 'CHECKS_DONE'"
+		},
+		{
+			"label": "eslint-run",
+			"type": "shell",
+			"command": "npx eslint components/CourseRevisionPlanner.tsx components/CourseStudyPage.tsx components/CourseOutlineCenter.tsx lib/revision-plan.ts lib/revision-plan-server.ts database/models/revision-plan.model.ts app/api/courses --ext .ts,.tsx -f unix > eslint-out.tmp.txt 2>&1; Write-Output \"ESLINT_DONE exit=$LASTEXITCODE\""
+		},
+		{
+			"label": "eslint-run-2",
+			"type": "shell",
+			"command": "npx eslint components/CourseRevisionPlanner.tsx components/CourseStudyPage.tsx components/CourseOutlineCenter.tsx lib/revision-plan.ts lib/revision-plan-server.ts database/models/revision-plan.model.ts app/api/courses *> eslint-out2.tmp.txt; Write-Output \"ESLINT2_DONE exit=$LASTEXITCODE\""
+		},
+		{
+			"label": "tsc-run-3",
+			"type": "shell",
+			"command": "npx tsc --noEmit --pretty false *> tsc-out3.tmp.txt; Select-String -Path tsc-out3.tmp.txt -Pattern 'revision|CourseStudyPage|CourseOutlineCenter|outline|courses/\\[courseId\\]/route' | ForEach-Object { $_.Line }; Write-Output 'TSC3_DONE'"
+		},
+		{
+			"label": "build-run",
+			"type": "shell",
+			"command": "Remove-Item tsc-out*.tmp.txt, eslint-out*.tmp.txt -ErrorAction SilentlyContinue; npm run build *> build-out.tmp.txt; Write-Output \"BUILD_DONE exit=$LASTEXITCODE\"; Get-Content build-out.tmp.txt -Tail 40"
+		},
+		{
+			"label": "cleanup-status",
+			"type": "shell",
+			"command": "Remove-Item build-out.tmp.txt -ErrorAction SilentlyContinue; git status --short"
+		},
+		{
+			"label": "verify-recs",
+			"type": "shell",
+			"command": "node --experimental-strip-types --test tests/revision-plan.test.mjs *> t.tmp.txt; Get-Content t.tmp.txt | Select-String -Pattern '✔|✖|ℹ (tests|pass|fail)|Error|expected|actual'; npx eslint components/CourseRevisionPlanner.tsx lib/revision-plan.ts *> e.tmp.txt; Write-Output \"ESLINT exit=$LASTEXITCODE\"; Get-Content e.tmp.txt; npx tsc --noEmit --pretty false *> c.tmp.txt; Select-String -Path c.tmp.txt -Pattern 'revision' | ForEach-Object { $_.Line }; Write-Output 'TSC_CHECKED'; Remove-Item t.tmp.txt,e.tmp.txt,c.tmp.txt"
+		},
+		{
+			"label": "rerun-tests",
+			"type": "shell",
+			"command": "node --experimental-strip-types --test tests/revision-plan.test.mjs 2>&1 | Select-Object -Last 32"
+		},
+		{
+			"label": "verify-match",
+			"type": "shell",
+			"command": "node --experimental-strip-types --test tests/revision-plan.test.mjs 2>&1 | Select-String -Pattern 'fail|pass|not ok|✖|Γ£û|expected|actual' ; npx eslint lib/revision-plan.ts; Write-Output \"ESLINT exit=$LASTEXITCODE\""
+		},
+		{
+			"label": "lint-planner",
+			"type": "shell",
+			"command": "npx eslint components/CourseRevisionPlanner.tsx; Write-Output \"ESLINT_EXIT=$LASTEXITCODE\""
+		},
+		{
+			"label": "verify-scope-1",
+			"type": "shell",
+			"command": "node --experimental-strip-types --test tests/revision-plan.test.mjs > .tmp-scope-test.txt 2>&1; npx eslint components/CourseRevisionPlanner.tsx lib/revision-plan.ts lib/revision-plan-server.ts > .tmp-scope-lint.txt 2>&1; echo done >> .tmp-scope-lint.txt"
+		},
+		{
+			"label": "rp-verify-addtopic",
+			"type": "shell",
+			"command": "node --experimental-strip-types --test tests/revision-plan.test.mjs 2>&1 | Out-File -Encoding utf8 .tmp-rp-test.txt; npx eslint components/CourseRevisionPlanner.tsx components/CourseQuizCenter.tsx components/CourseStudyPage.tsx lib/revision-plan.ts 2>&1 | Out-File -Encoding utf8 .tmp-rp-lint.txt"
+		},
+		{
+			"label": "copy mentor icon",
+			"type": "shell",
+			"command": "copy",
+			"args": [
+				"C:\\Users\\USER\\.copilot\\session-state\\66696cf0-e167-4b9c-bd94-a1505e7f8622\\images\\image-1e187fdec12d4a28.png",
+				"C:\\Users\\USER\\testing bookified\\public\\assets\\mentor-icon.png"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "install mentor app icon",
+			"type": "shell",
+			"command": "copy",
+			"args": [
+				"C:\\Users\\USER\\testing bookified\\public\\assets\\mentor-icon.png",
+				"C:\\Users\\USER\\testing bookified\\app\\icon.png"
+			],
+			"isBackground": false
+		}
+	]
+}

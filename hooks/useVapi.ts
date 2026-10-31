@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
 import { useAuth } from '@clerk/nextjs';
 
-import { useSubscription } from '@/hooks/useSubscription';
+// import { useSubscription } from '@/hooks/useSubscription';
 import { ASSISTANT_ID, DEFAULT_VOICE, VOICE_SETTINGS } from '@/lib/constants';
 import { getVoice } from '@/lib/utils';
 import { IBook, Messages } from '@/types';
@@ -26,9 +26,7 @@ export function useLatestRef<T>(value: T) {
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY;
 const TIMER_INTERVAL_MS = 1000;
-const SECONDS_PER_MINUTE = 60;
-const TIME_WARNING_THRESHOLD = 60; // Show warning when this many seconds remain
-
+// const SECONDS_PER_MINUTE = 60;
 let vapi: InstanceType<typeof Vapi>;
 function getVapi() {
     if (!vapi) {
@@ -44,7 +42,7 @@ export type CallStatus = 'idle' | 'connecting' | 'starting' | 'listening' | 'thi
 
 export function useVapi(book: IBook) {
     const { userId } = useAuth();
-    const { limits } = useSubscription();
+    // const { limits } = useSubscription();
 
     const [status, setStatus] = useState<CallStatus>('idle');
     const [messages, setMessages] = useState<Messages[]>([]);
@@ -61,8 +59,9 @@ export function useVapi(book: IBook) {
     const hasCallStartedRef = useRef(false);
 
     // Keep refs in sync with latest values for use in callbacks
-    const maxDurationSeconds = limits?.maxDurationPerSession ? limits.maxDurationPerSession * 60 : (15 * 60);
-    const maxDurationRef = useLatestRef(maxDurationSeconds);
+    // Subscription duration cap, kept for re-enabling billing limits later:
+    // const maxDurationSeconds = limits?.maxDurationPerSession ? limits.maxDurationPerSession * 60 : (15 * 60);
+    // const maxDurationRef = useLatestRef(maxDurationSeconds);
     const durationRef = useLatestRef(duration);
     const voice = book.persona || DEFAULT_VOICE;
 
@@ -84,15 +83,15 @@ export function useVapi(book: IBook) {
                         const newDuration = Math.floor((Date.now() - startTimeRef.current) / TIMER_INTERVAL_MS);
                         setDuration(newDuration);
 
-                        // Check duration limit
-                        if (newDuration >= maxDurationRef.current) {
-                            getVapi().stop();
-                            setLimitError(
-                                `Session time limit (${Math.floor(
-                                    maxDurationRef.current / SECONDS_PER_MINUTE,
-                                )} minutes) reached. Upgrade your plan for longer sessions.`,
-                            );
-                        }
+                        // Duration limit is temporarily disabled; restore this check with billing:
+                        // if (newDuration >= maxDurationRef.current) {
+                        //     getVapi().stop();
+                        //     setLimitError(
+                        //         `Session time limit (${Math.floor(
+                        //             maxDurationRef.current / SECONDS_PER_MINUTE,
+                        //         )} minutes) reached. Upgrade your plan for longer sessions.`,
+                        //     );
+                        // }
                     }
                 }, TIMER_INTERVAL_MS);
             },
@@ -253,7 +252,7 @@ export function useVapi(book: IBook) {
         setStatus('connecting');
 
         try {
-            // Check session limits and create session record
+            // Session limit check is temporarily disabled; session records are still created.
             const result = await startVoiceSession(userId, book._id);
 
             if (!result.success) {
@@ -264,10 +263,10 @@ export function useVapi(book: IBook) {
             }
 
             sessionIdRef.current = result.sessionId || null;
-            // Note: Server-returned maxDurationMinutes is informational only
-            // The actual limit is enforced by useLatestRef(limits.maxSessionMinutes * 60)
+            // Session duration is unlimited while subscription limits are disabled.
+            // const maxDurationSeconds = result.maxDurationMinutes * SECONDS_PER_MINUTE;
 
-            const firstMessage = `Hey, good to meet you. Quick question before we dive in - have you actually read ${book.title} yet, or are we starting fresh?`;
+            const firstMessage = `Hi, I'm Mentor, your personal AI study companion. Before we dive into ${book.title}, have you read it already, or are we starting fresh?`;
 
             await getVapi().start(ASSISTANT_ID, {
                 firstMessage,
@@ -358,9 +357,7 @@ export function useVapi(book: IBook) {
         sendText,
         limitError,
         isBillingError,
-        maxDurationSeconds,
         clearError,
-        // maxDurationSeconds,
         // remainingSeconds,
         // showTimeWarning,
     };

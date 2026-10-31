@@ -12,7 +12,7 @@ import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 
 const VapiControls = ({ book }: { book: IBook }) => {
-    const { status, isActive, messages, currentMessage, currentUserMessage, duration, start, stop, sendText, clearError, limitError, isBillingError, maxDurationSeconds } = useVapi(book)
+    const { status, isActive, messages, currentMessage, currentUserMessage, duration, start, stop, sendText, clearError, limitError, isBillingError } = useVapi(book)
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
     const [text, setText] = useState('');
@@ -109,6 +109,9 @@ const VapiControls = ({ book }: { book: IBook }) => {
 
                     <div className="flex flex-col gap-4 flex-1">
                         <div>
+                            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#3d485e]">
+                                Mentor AI <span className="normal-case tracking-normal">· Mentor 0.1</span>
+                            </p>
                             <h1 className="text-2xl sm:text-3xl font-bold font-serif text-[#212a3b] mb-1">
                                 {book.title}
                             </h1>
@@ -127,7 +130,7 @@ const VapiControls = ({ book }: { book: IBook }) => {
 
                             <div className="vapi-status-indicator">
                                 <span className="vapi-status-text">
-                                    {formatDuration(duration)}/{formatDuration(maxDurationSeconds)}
+                                    {formatDuration(duration)}
                                 </span>
                             </div>
                         </div>

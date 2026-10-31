@@ -7,6 +7,9 @@ import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
 import mongoose from "mongoose";
 import { auth } from "@clerk/nextjs/server";
+import { del } from "@vercel/blob";
+import VoiceSession from "@/database/models/voice-session.model";
+import { revalidatePath } from "next/cache";
 
 export const getAllBooks = async (search?: string) => {
     try {
@@ -162,6 +165,67 @@ export const getBookBySlug = async (slug: string) => {
         }
     }
 }
+
+export const deleteBook = async (slug: string) => {
+    try {
+        await connectToDatabase();
+
+        const { userId } = await auth();
+
+        if (!userId) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const book = await Book.findOneAndDelete({ slug, clerkId: userId });
+
+        if (!book) {
+            return { success: false, error: "Book not found in your collection." };
+        }
+
+        const cleanupErrors: string[] = [];
+        const bookId = book._id;
+
+        const cleanupResults = await Promise.allSettled([
+            BookSegment.deleteMany({ bookId, clerkId: userId }),
+            VoiceSession.deleteMany({ bookId, clerkId: userId }),
+        ]);
+
+        cleanupResults.forEach((result) => {
+            if (result.status === "rejected") {
+                console.error("Failed to delete book-related records:", result.reason);
+                cleanupErrors.push("some related records could not be removed");
+            }
+        });
+
+        const blobUrls = [book.fileURL, book.coverURL].filter(
+            (url): url is string => typeof url === "string" && url.length > 0,
+        );
+
+        if (blobUrls.length > 0) {
+            try {
+                await del(blobUrls);
+            } catch (error) {
+                console.error("Failed to delete book files from Vercel Blob:", error);
+                cleanupErrors.push("uploaded files could not be removed");
+            }
+        }
+
+        revalidatePath("/");
+
+        return {
+            success: true,
+            warning: cleanupErrors.length > 0
+                ? `The book was deleted, but ${cleanupErrors.join(" and ")}.`
+                : undefined,
+        };
+    } catch (error) {
+        console.error("Error deleting book:", error);
+        return {
+            success: false,
+            error: "Failed to delete the book. Please try again.",
+        };
+    }
+};
 
 export const saveBookSegments = async (bookId: string, clerkId: string, segments: TextSegment[]) => {
     try {

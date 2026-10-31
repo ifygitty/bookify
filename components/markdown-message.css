@@ -1,0 +1,163 @@
+.md-content {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.md-content > * + * { margin-top: 0.85rem; }
+.md-content p { margin: 0; }
+.md-content strong { font-weight: 650; color: #fff; }
+.md-content a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+.md-content a:hover { color: var(--gold-hover); }
+
+.md-content .md-h { font-weight: 650; line-height: 1.35; color: #fff; margin-bottom: -0.2rem; }
+.md-content > .md-h:not(:first-child) { margin-top: 1.35rem; }
+.md-content .md-h1 { font-size: 1.2rem; }
+.md-content .md-h2 { font-size: 1.1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--navy-border); }
+.md-content .md-h3 { font-size: 1.025rem; color: var(--gold); }
+.md-content .md-h4,
+.md-content .md-h5,
+.md-content .md-h6 { font-size: 0.95rem; color: var(--ink-soft); }
+
+.md-content ul,
+.md-content ol { padding-left: 1.5rem; margin: 0; }
+.md-content ul { list-style: disc; }
+.md-content ol { list-style: decimal; }
+.md-content ol[type="a"] { list-style-type: lower-alpha; }
+.md-content ol[type="A"] { list-style-type: upper-alpha; }
+.md-content li { padding-left: 0.2rem; }
+.md-content li + li { margin-top: 0.35rem; }
+.md-content li > ul,
+.md-content li > ol { margin-top: 0.35rem; }
+.md-content li::marker { color: var(--gold); font-weight: 600; }
+
+.md-content .md-hr { border: 0; border-top: 1px solid var(--navy-border); }
+.md-content .md-quote {
+  border-left: 3px solid var(--navy-border);
+  padding-left: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.md-content .md-code-inline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--navy-inset);
+  border: 1px solid var(--navy-border);
+  border-radius: 0.375rem;
+  padding: 0.1em 0.4em;
+}
+.md-content .md-pre {
+  margin: 0;
+  background: var(--navy-inset);
+  border: 1px solid var(--navy-border);
+  border-radius: 0.75rem;
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.md-content .md-math {
+  font-family: "Cambria Math", "STIX Two Math", Cambria, Georgia, serif;
+  white-space: nowrap;
+}
+.md-content .md-math sup,
+.md-content .md-math sub { font-size: 0.75em; line-height: 0; }
+.md-content .md-formula {
+  font-family: "Cambria Math", "STIX Two Math", Cambria, Georgia, serif;
+  font-size: 1.05rem;
+  text-align: center;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: rgba(212, 175, 55, 0.08);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+.md-content .md-formula sup,
+.md-content .md-formula sub { font-size: 0.75em; line-height: 0; }
+
+.md-content .md-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--navy-border);
+  border-radius: 0.75rem;
+}
+.md-content table {
+  width: 100%;
+  min-width: 30rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.md-content th {
+  background: var(--navy-600);
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid var(--navy-border);
+}
+.md-content td {
+  padding: 0.5rem 0.8rem;
+  vertical-align: top;
+  border-top: 1px solid rgba(36, 58, 86, 0.7);
+}
+.md-content tbody tr:first-child td { border-top: 0; }
+.md-content tbody tr:nth-child(even) { background: rgba(11, 27, 50, 0.45); }
+.md-content td.md-num { white-space: nowrap; }
+.md-content .md-right { text-align: right; }
+.md-content .md-center { text-align: center; }
+.md-content .md-left { text-align: left; }
+.md-content tr.md-total td {
+  font-weight: 600;
+  background: rgba(212, 175, 55, 0.08);
+  border-top: 1px solid rgba(212, 175, 55, 0.6);
+}
+
+.md-content .md-callout {
+  border: 1px solid;
+  border-left-width: 3px;
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.9rem;
+}
+.md-content .md-callout > * + * { margin-top: 0.5rem; }
+.md-content .md-callout-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.md-content .md-callout-definition,
+.md-content .md-callout-note {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(96, 165, 250, 0.45);
+}
+.md-content .md-callout-definition .md-callout-label,
+.md-content .md-callout-note .md-callout-label { color: #93c5fd; }
+.md-content .md-callout-formula,
+.md-content .md-callout-tip {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+.md-content .md-callout-formula .md-callout-label,
+.md-content .md-callout-tip .md-callout-label { color: var(--gold); }
+.md-content .md-callout-answer {
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.5);
+}
+.md-content .md-callout-answer .md-callout-label { color: var(--success-color); }
+.md-content .md-callout-warning {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.55);
+}
+.md-content .md-callout-warning .md-callout-label { color: var(--warning-color); }
+
+@media (max-width: 480px) {
+  .md-content { font-size: 0.9rem; }
+  .md-content ul,
+  .md-content ol { padding-left: 1.25rem; }
+}

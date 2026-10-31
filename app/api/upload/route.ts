@@ -8,7 +8,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const body = (await request.json()) as HandleUploadBody;
 
         const jsonResponse = await handleUpload({
-            token: process.env.VERCEL_BLOB_READ_WRITE_TOKEN,
+            token: process.env.VERCEL_BLOB_READ_WRITE_TOKEN ?? process.env.BLOB_READ_WRITE_TOKEN,
             body,
             request,
             onBeforeGenerateToken: async () => {
@@ -22,15 +22,9 @@ export async function POST(request: Request): Promise<NextResponse> {
                     allowedContentTypes: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'],
                     addRandomSuffix: true,
                     maximumSizeInBytes: MAX_FILE_SIZE,
-                    tokenPayload: JSON.stringify({ userId })
                 }
         } ,
-            onUploadCompleted: async ({ blob, tokenPayload }) => {
-                console.log('File uploaded to blob: ', blob.url)
-
-                const payload = tokenPayload ? JSON.parse(tokenPayload): null
-                const userId = payload?.userId;
-
+            onUploadCompleted: async () => {
                 // TODO: PostHog
             }
         });
