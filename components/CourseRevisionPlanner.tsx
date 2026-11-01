@@ -556,6 +556,11 @@ export default function CourseRevisionPlanner({
                     <Plus className="size-5" />Create Revision Plan
                 </button>
             </div>
+            {data && !data.hasOutline && (
+                <p role="status" className="mt-3 text-xs text-[#3d485e]">
+                    Create Revision Plan is unavailable because your course outline has no topics. Add or generate outline topics to enable it.
+                </p>
+            )}
 
             {pendingAdd && data && (
                 <div role="region" aria-label="Add topic to revision plan" className="mt-5 rounded-xl border border-[#663820]/30 bg-[#fff6e5] p-4 text-sm text-[#212a3b]">
@@ -623,7 +628,7 @@ export default function CourseRevisionPlanner({
                     {loadError}{" "}
                     <button type="button" onClick={() => void load()} className="font-semibold underline">Try again</button>
                 </div>
-            ) : !data?.hasOutline ? (
+            ) : !data?.hasOutline && !plan ? (
                 <p className="mt-5 rounded-xl border border-dashed border-[#212a3b]/20 px-4 py-6 text-center text-sm text-[#3d485e]">
                     Create a course outline first. The planner schedules the topics in your outline.
                 </p>
