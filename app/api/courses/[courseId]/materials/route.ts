@@ -10,6 +10,32 @@ import { MAX_FILE_SIZE } from "@/lib/constants";
 import { getBlobReadWriteToken } from "@/lib/blob";
 import { COURSE_MATERIAL_MIME_TYPES, getCourseMaterialExtension } from "@/lib/course-material-types";
 import { extractCourseMaterialText } from "@/lib/extract-course-material-text";
+import { extractPdfVisualContent } from "@/lib/pdf-visual-content";
+
+export const maxDuration = 180;
+
+function isNotFoundError(error: unknown): boolean {
+    return typeof error === "object" && error !== null && "status" in error && error.status === 404;
+}
+
+async function removeOpenAIFile(
+    openai: ReturnType<typeof getOpenAIClient>,
+    fileId: string,
+    vectorStoreId?: string,
+) {
+    if (vectorStoreId) {
+        try {
+            await openai.vectorStores.files.delete(fileId, { vector_store_id: vectorStoreId });
+        } catch (error) {
+            if (!isNotFoundError(error)) throw error;
+        }
+    }
+    try {
+        await openai.files.delete(fileId);
+    } catch (error) {
+        if (!isNotFoundError(error)) throw error;
+    }
+}
 
 export async function POST(
     request: Request,
@@ -28,6 +54,10 @@ export async function POST(
 
     let blobPathname: string | undefined;
     let openAIFileId: string | undefined;
+    let visualOpenAIFileId: string | undefined;
+    let indexedVectorStoreId: string | undefined;
+    let materialRecordId: Types.ObjectId | undefined;
+    let materialRecordSaved = false;
     let blobCleanupFailed = false;
     let openAICleanupFailed = false;
     const blobToken = getBlobReadWriteToken();
@@ -125,7 +155,9 @@ export async function POST(
         openAIFileId = uploadedFile.id;
 
         const materialId = new Types.ObjectId();
+        materialRecordId = materialId;
         const courseVectorStoreId = course.vectorStoreId;
+        indexedVectorStoreId = courseVectorStoreId;
         const indexedFile = await openai.vectorStores.files.createAndPoll(courseVectorStoreId, {
             file_id: uploadedFile.id,
             attributes: { material_id: materialId.toString() },
@@ -134,16 +166,8 @@ export async function POST(
             throw new Error(indexedFile.last_error?.message || "OpenAI could not index this material.");
         }
 
-        if (isPdf) {
-            await del(blobPathname, { token: blobToken });
-            blobPathname = undefined;
-        }
-
-        const updatedCourse = await Course.findOneAndUpdate(
-            {
-                _id: course._id,
-                clerkId: userId,
-            },
+        const initialMaterial = await Course.updateOne(
+            { _id: course._id, clerkId: userId },
             {
                 $push: {
                     materials: {
@@ -151,6 +175,8 @@ export async function POST(
                         title,
                         fileSize: fileBytes.byteLength,
                         openAIFileId: uploadedFile.id,
+                        visualProcessingStatus: isPdf ? "processing" : "not-needed",
+                        visualProcessingStartedAt: isPdf ? new Date() : undefined,
                         memorySummary: "",
                         originalBlobPathname: isPdf ? undefined : blobPathname,
                         originalFileName: filename,
@@ -158,10 +184,99 @@ export async function POST(
                     },
                 },
             },
-            { new: true },
+        );
+        if (initialMaterial.modifiedCount !== 1) {
+            throw new Error("Course was removed before the material could be saved.");
+        }
+        materialRecordSaved = true;
+
+        let visualProcessingStatus: "not-needed" | "processing" | "complete" | "partial" | "failed" =
+            isPdf ? "processing" : "not-needed";
+        let visualProcessingMessage: string | undefined;
+        if (isPdf) {
+            try {
+                const visualExtraction = await extractPdfVisualContent(fileBuffer, openai);
+                if (visualExtraction.analyzedPageCount > 0 || visualExtraction.skippedPageCount > 0) {
+                    visualProcessingStatus =
+                        visualExtraction.skippedPageCount > 0 ? "partial" : "complete";
+                }
+                if (visualExtraction.skippedPageCount > 0) {
+                    visualProcessingMessage =
+                        `Visual analysis covered ${visualExtraction.analyzedPageCount} pages. ${visualExtraction.skippedPageCount} pages were not analyzed because this document reached the processing limit.`;
+                }
+
+                if (visualExtraction.text) {
+                    const visualFile = await openai.files.create({
+                        file: await toFile(
+                            Buffer.from(visualExtraction.text, "utf8"),
+                            `${title}-visual-notes.txt`,
+                            { type: "text/plain" },
+                        ),
+                        purpose: "assistants",
+                    });
+                    visualOpenAIFileId = visualFile.id;
+
+                    const visualIndex = await openai.vectorStores.files.createAndPoll(
+                        courseVectorStoreId,
+                        {
+                            file_id: visualFile.id,
+                            attributes: { material_id: materialId.toString() },
+                        },
+                    );
+                    if (visualIndex.status !== "completed") {
+                        throw new Error(
+                            visualIndex.last_error?.message ||
+                                "OpenAI could not index the visual notes.",
+                        );
+                    }
+                }
+            } catch (error) {
+                console.error("Visual analysis of the uploaded PDF did not complete:", error);
+                visualProcessingStatus = "failed";
+                visualProcessingMessage =
+                    "The PDF text is available, but some image-based content could not be analyzed. Handwriting, diagrams or scanned pages may be missing.";
+                if (visualOpenAIFileId) {
+                    try {
+                        await removeOpenAIFile(openai, visualOpenAIFileId, courseVectorStoreId);
+                        visualOpenAIFileId = undefined;
+                    } catch (cleanupError) {
+                        openAICleanupFailed = true;
+                        console.error("Failed to clean up the visual-analysis file:", cleanupError);
+                    }
+                }
+            }
+        }
+
+        if (isPdf) {
+            await del(blobPathname, { token: blobToken });
+            blobPathname = undefined;
+        }
+
+        const materialFields = {
+            "materials.$.visualProcessingStatus": visualProcessingStatus,
+            "materials.$.visualProcessingMessage": visualProcessingMessage,
+        };
+        const materialUpdate = visualOpenAIFileId
+            ? {
+                  $set: {
+                      ...materialFields,
+                      "materials.$.visualOpenAIFileId": visualOpenAIFileId,
+                  },
+              }
+            : {
+                  $set: materialFields,
+                  $unset: { "materials.$.visualOpenAIFileId": "" },
+              };
+        const updatedCourse = await Course.updateOne(
+            {
+                _id: course._id,
+                clerkId: userId,
+                "materials._id": materialId,
+            },
+            materialUpdate,
         );
 
-        if (!updatedCourse) {
+        if (updatedCourse.matchedCount !== 1) {
             throw new Error("Course was removed before the material could be saved.");
         }
         blobPathname = undefined;
@@ -172,6 +287,8 @@ export async function POST(
                     id: materialId.toString(),
                     title,
                     fileSize: fileBytes.byteLength,
+                    visualProcessingStatus,
+                    visualProcessingMessage,
                 },
             },
             { status: 201 },
@@ -179,15 +296,34 @@ export async function POST(
     } catch (error) {
         console.error("Failed to add course material:", error);
 
+        if (materialRecordSaved && materialRecordId) {
+            try {
+                await Course.updateOne(
+                    { _id: courseId, clerkId: userId },
+                    { $pull: { materials: { _id: materialRecordId } } },
+                );
+            } catch (cleanupError) {
+                console.error("Failed to remove the pending material record after upload failure:", cleanupError);
+            }
+        }
+
         if (openAIFileId) {
             try {
-                await getOpenAIClient().files.delete(openAIFileId);
+                await removeOpenAIFile(getOpenAIClient(), openAIFileId, indexedVectorStoreId);
             } catch (cleanupError) {
                 openAICleanupFailed = true;
                 console.error("Failed to clean up the OpenAI file after upload failure:", cleanupError);
             }
         }
 
+        if (visualOpenAIFileId) {
+            try {
+                await removeOpenAIFile(getOpenAIClient(), visualOpenAIFileId, indexedVectorStoreId);
+            } catch (cleanupError) {
+                openAICleanupFailed = true;
+                console.error("Failed to clean up the visual-analysis file:", cleanupError);
+            }
+        }
         if (blobPathname && blobToken) {
             try {
                 await del(blobPathname, { token: blobToken });

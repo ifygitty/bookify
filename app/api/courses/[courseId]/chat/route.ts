@@ -293,7 +293,13 @@ function extractFileCitations(
     materials: CourseMaterialRecord[],
 ): CourseCitation[] {
     const citations = new Map<string, CourseCitation>();
-    const materialByFileId = new Map(materials.map((material) => [material.openAIFileId, material]));
+    const materialByFileId = new Map<string, CourseMaterialRecord>();
+    for (const material of materials) {
+        materialByFileId.set(material.openAIFileId, material);
+        if (material.visualOpenAIFileId) {
+            materialByFileId.set(material.visualOpenAIFileId, material);
+        }
+    }
 
     const addCitation = (fileId: string, fallbackFilename: string) => {
         const material = materialByFileId.get(fileId);

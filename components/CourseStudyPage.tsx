@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUp, BookOpenCheck, FileText, FolderOpen, LoaderCircle, Menu, SlidersHorizontal, Trash2, Upload } from "lucide-react";
+import { ArrowUp, BookOpenCheck, FileText, FolderOpen, LoaderCircle, Menu, RefreshCw, SlidersHorizontal, Trash2, Upload } from "lucide-react";
 import { upload } from "@vercel/blob/client";
 import CourseQuizCenter from "@/components/CourseQuizCenter";
 import CourseFlashcardCenter from "@/components/CourseFlashcardCenter";
@@ -13,7 +13,14 @@ import MarkdownMessage from "@/components/MarkdownMessage";
 import { COURSE_MATERIAL_MIME_TYPES, getCourseMaterialExtension } from "@/lib/course-material-types";
 import { toggleMaterialSelection } from "@/lib/material-selection";
 
-type CourseMaterial = { id: string; title: string; fileSize: number; fileType?: string };
+type CourseMaterial = {
+    id: string;
+    title: string;
+    fileSize: number;
+    fileType?: string;
+    visualProcessingStatus?: "not-needed" | "processing" | "complete" | "partial" | "failed";
+    visualProcessingMessage?: string;
+};
 type Course = { id: string; name: string; materials: CourseMaterial[] };
 type Citation = { fileId: string; filename: string; materialId?: string };
 type Message = {
@@ -43,6 +50,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
     const [quizCenterKey, setQuizCenterKey] = useState(0);
     const [addTopicRequest, setAddTopicRequest] = useState<{ topic: string; nonce: number } | null>(null);
     const [deletingMaterialId, setDeletingMaterialId] = useState<string | null>(null);
+    const [reanalyzingMaterialId, setReanalyzingMaterialId] = useState<string | null>(null);
     const [error, setError] = useState("");
     const [uploadError, setUploadError] = useState("");
     const [materialActionError, setMaterialActionError] = useState("");
@@ -188,11 +196,34 @@ export default function CourseStudyPage({ course }: { course: Course }) {
         }
     };
 
+    const retryVisualAnalysis = async (material: CourseMaterial) => {
+        if (isUploading || deletingMaterialId || reanalyzingMaterialId) return;
+        setMaterialActionError("");
+        setReanalyzingMaterialId(material.id);
+        try {
+            const response = await fetch(
+                `/api/courses/${course.id}/materials/${material.id}/visual-analysis`,
+                { method: "POST" },
+            );
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Could not analyze this PDF.");
+            router.refresh();
+        } catch (requestError) {
+            console.error("PDF visual-analysis retry failed:", requestError);
+            setMaterialActionError(
+                requestError instanceof Error ? requestError.message : "Could not analyze this PDF.",
+            );
+        } finally {
+            setReanalyzingMaterialId(null);
+        }
+    };
+
     const deleteMaterial = async (material: CourseMaterial) => {
         if (
             isSending ||
             isUploading ||
             deletingMaterialId ||
+            reanalyzingMaterialId ||
             !window.confirm(`Delete "${material.title}" and its related chat history? This cannot be undone.`)
         ) return;
 
@@ -329,7 +360,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                     </div>
                     <label className="btn-primary cursor-pointer justify-center">
                         {isUploading ? <LoaderCircle className="size-5 animate-spin" /> : <Upload className="size-5" />}
-                        {isUploading ? "Processing material..." : "Add study material"}
+                        {isUploading ? "Analyzing document..." : "Add study material"}
                         <input
                             type="file"
                             accept=".pdf,.doc,.docx,.xls,.xlsx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -396,12 +427,44 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                                             className="size-4 shrink-0 accent-[#663820]"
                                         />
                                         <FileText className="size-4 shrink-0" />
-                                        <span className="truncate font-medium">{material.title}</span>
+                                        <span className="min-w-0 flex-1">
+                                            <span className="block truncate font-medium">{material.title}</span>
+                                            {material.visualProcessingStatus === "complete" && (
+                                                <span className="mt-0.5 block text-xs text-emerald-700">Visual content analyzed</span>
+                                            )}
+                                            {(material.visualProcessingStatus === "partial" || material.visualProcessingStatus === "failed") && (
+                                                <span
+                                                    className="mt-0.5 block text-xs leading-5 text-amber-700"
+                                                    title={material.visualProcessingMessage}
+                                                >
+                                                    {material.visualProcessingMessage || "Some visual content may not be available."}
+                                                </span>
+                                            )}
+                                            {material.visualProcessingStatus === "processing" && (
+                                                <span className="mt-0.5 block text-xs text-[var(--ink-soft)]">
+                                                    Visual content analysis is in progress.
+                                                </span>
+                                            )}
+                                        </span>
                                     </label>
+                                    {(material.visualProcessingStatus === "failed" ||
+                                        material.visualProcessingStatus === "processing") && (
+                                        <button
+                                            type="button"
+                                            onClick={() => retryVisualAnalysis(material)}
+                                            disabled={isUploading || deletingMaterialId !== null || reanalyzingMaterialId !== null}
+                                            className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-lg border border-[var(--navy-border)] px-2 text-xs font-medium text-[var(--ink-soft)] hover:text-[var(--gold)] disabled:opacity-50"
+                                        >
+                                            {reanalyzingMaterialId === material.id
+                                                ? <LoaderCircle className="size-3 animate-spin" />
+                                                : <RefreshCw className="size-3" />}
+                                            {material.visualProcessingStatus === "processing" ? "Resume" : "Retry"}
+                                        </button>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={() => deleteMaterial(material)}
-                                        disabled={isSending || isUploading || deletingMaterialId !== null}
+                                        disabled={isSending || isUploading || deletingMaterialId !== null || reanalyzingMaterialId !== null}
                                         aria-label={`Delete ${material.title}`}
                                         title={`Delete ${material.title}`}
                                         className="icon-btn icon-btn-danger shrink-0 disabled:cursor-not-allowed disabled:opacity-50"
@@ -572,7 +635,11 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                                                     <span className="font-semibold text-[var(--ink-soft)]">Sources:</span>
                                                     {message.citations
                                                         .filter((citation, sourceIndex, citations) =>
-                                                            citations.findIndex((item) => item.fileId === citation.fileId) === sourceIndex,
+                                                            citations.findIndex(
+                                                                (item) =>
+                                                                    (item.materialId ?? item.fileId) ===
+                                                                    (citation.materialId ?? citation.fileId),
+                                                            ) === sourceIndex,
                                                         )
                                                         .map((citation) => {
                                                             const source = course.materials.find(

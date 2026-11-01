@@ -5,6 +5,14 @@ const CourseMaterialSchema = new Schema(
         title: { type: String, required: true, trim: true },
         fileSize: { type: Number, required: true },
         openAIFileId: { type: String, required: true },
+        visualOpenAIFileId: { type: String },
+        visualProcessingStatus: {
+            type: String,
+            enum: ["not-needed", "processing", "complete", "partial", "failed"],
+            default: "not-needed",
+        },
+        visualProcessingMessage: { type: String },
+        visualProcessingStartedAt: { type: Date },
         memorySummary: { type: String, default: "" },
         originalBlobPathname: { type: String },
         originalFileName: { type: String },
@@ -31,6 +39,10 @@ export type CourseMaterialRecord = {
     title: string;
     fileSize: number;
     openAIFileId: string;
+    visualOpenAIFileId?: string;
+    visualProcessingStatus?: "not-needed" | "processing" | "complete" | "partial" | "failed";
+    visualProcessingMessage?: string;
+    visualProcessingStartedAt?: Date;
     memorySummary: string;
     originalBlobPathname?: string;
     originalFileName?: string;

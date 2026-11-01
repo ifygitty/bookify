@@ -236,10 +236,13 @@ export default function CourseWorkspaceNav({
             >
                 <div className="border-b border-[var(--navy-border)] p-3">
                     <div className={cn("mb-3 flex items-center gap-2", collapsed && "justify-center")}>
-                        <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1">
-                            <Image src="/assets/mentor-icon.png" alt="Mentor" width={1024} height={1024} className="size-full object-contain" />
-                        </span>
-                        {!collapsed && <span className="text-sm font-bold tracking-wide text-[var(--ink)]">Mentor</span>}
+                        <Image
+                            src="/assets/mainlogo-mark.svg"
+                            alt="Mentor"
+                            width={640}
+                            height={640}
+                            className="size-10 shrink-0 object-contain"
+                        />
                     </div>
                     <div className={cn("flex items-center gap-2", collapsed && "justify-center")}>
                     <Link href="/courses" aria-label="All courses" title="All courses" className="icon-btn">

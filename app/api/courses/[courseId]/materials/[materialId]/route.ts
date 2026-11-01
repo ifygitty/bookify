@@ -136,17 +136,22 @@ export async function DELETE(
         }
 
         const openai = getOpenAIClient();
-        try {
-            await openai.vectorStores.files.delete(material.openAIFileId, {
-                vector_store_id: course.vectorStoreId,
-            });
-        } catch (error) {
-            if (!isNotFoundError(error)) throw error;
-        }
-        try {
-            await openai.files.delete(material.openAIFileId);
-        } catch (error) {
-            if (!isNotFoundError(error)) throw error;
+        const openAIFileIds = [material.openAIFileId, material.visualOpenAIFileId].filter(
+            (fileId): fileId is string => Boolean(fileId),
+        );
+        for (const fileId of openAIFileIds) {
+            try {
+                await openai.vectorStores.files.delete(fileId, {
+                    vector_store_id: course.vectorStoreId,
+                });
+            } catch (error) {
+                if (!isNotFoundError(error)) throw error;
+            }
+            try {
+                await openai.files.delete(fileId);
+            } catch (error) {
+                if (!isNotFoundError(error)) throw error;
+            }
         }
         if (material.originalBlobPathname && blobToken) {
             await del(material.originalBlobPathname, { token: blobToken });

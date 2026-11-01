@@ -1,0 +1,42 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.landing-reveal[data-landing-enhanced="true"][data-landing-visible="false"] {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.landing-reveal[data-landing-enhanced="true"] {
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.landing-reveal[data-landing-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing-feature-card {
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.landing-feature-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .landing-reveal[data-landing-enhanced="true"],
+  .landing-feature-card {
+    transition: none;
+  }
+
+  .landing-feature-card:hover {
+    transform: none;
+  }
+}

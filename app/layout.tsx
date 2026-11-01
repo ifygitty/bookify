@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   description: "Your personal AI study companion for understanding course materials, practicing, and staying on track.",
   applicationName: "Mentor",
   icons: {
-    icon: "/assets/mentor-icon.png",
-    apple: "/assets/mentor-icon.png",
+    icon: "/assets/mainlogo-mark.svg",
+    apple: "/assets/mainlogo-mark.svg",
   },
 };
 
@@ -31,7 +31,7 @@ export const viewport: Viewport = {
 
 const clerkAppearance = {
   layout: {
-    logoImageUrl: "/assets/mentor-icon.png",
+    logoImageUrl: "/assets/Mainlogo.png",
   },
   variables: {
     colorPrimary: "#D4AF37",
@@ -55,7 +55,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={clerkAppearance}>
+    <ClerkProvider
+      appearance={clerkAppearance}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/courses"
+      signUpFallbackRedirectUrl="/courses"
+    >
         <html lang="en" className={`dark ${inter.variable}`}>
           <body
             className="relative font-sans antialiased"

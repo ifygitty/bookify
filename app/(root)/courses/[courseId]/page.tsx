@@ -21,7 +21,7 @@ export default async function CoursePage({
 
     await connectToDatabase();
     const course = await Course.findOne({ _id: courseId, clerkId: userId })
-        .select("name materials._id materials.title materials.fileSize materials.originalFileName")
+        .select("name materials._id materials.title materials.fileSize materials.originalFileName materials.visualProcessingStatus materials.visualProcessingMessage materials.visualProcessingStartedAt")
         .lean();
 
     if (!course) notFound();
@@ -34,6 +34,8 @@ export default async function CoursePage({
             title: material.title,
             fileSize: material.fileSize,
             fileType: material.originalFileName?.split(".").at(-1)?.toUpperCase() ?? "PDF",
+            visualProcessingStatus: material.visualProcessingStatus ?? "not-needed",
+            visualProcessingMessage: material.visualProcessingMessage ?? "",
         })),
     };
 

@@ -4,11 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import {usePathname} from "next/navigation";
 import { useState } from "react";
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
-import { Menu, X } from "lucide-react";
+import { SignedIn, SignedOut, UserButton, useClerk, useUser } from "@clerk/nextjs";
+import { LogOut, Menu, X } from "lucide-react";
 import {cn} from "@/lib/utils";
 
-const navItems = [
+const publicNavItems = [
+    { label: "Home", href: "/#top" },
+    { label: "Features", href: "/#features" },
+    { label: "How it works", href: "/#how-it-works" },
+    { label: "Testimonials", href: "/#testimonials" },
+    { label: "Pricing", href: "/subscriptions" },
+]
+
+const appNavItems = [
     { label: "Courses", href: "/courses" },
     { label: "Study progress", href: "/progress" },
     { label: "Pricing", href: "/subscriptions" },
@@ -16,54 +24,87 @@ const navItems = [
 
 const Navbar = () => {
     const pathName = usePathname();
-    const { user } = useUser();
+    const { user, isSignedIn } = useUser();
+    const { signOut } = useClerk();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const navItems = pathName === "/" || !isSignedIn ? publicNavItems : appNavItems;
 
-    const isActive = (href: string) =>
-        pathName === href || (href !== '/' && pathName.startsWith(href));
+    const isActive = (href: string) => {
+        if (href.startsWith("/#")) return false;
+        return pathName === href || pathName.startsWith(`${href}/`);
+    };
+
+    const handleSignOut = async () => {
+        setIsMobileMenuOpen(false);
+        await signOut({ redirectUrl: "/" });
+    };
 
     return (
         <header className="fixed z-50 w-full border-b border-[var(--navy-border)] bg-[var(--navy-900)]">
             <div className="wrapper navbar-height py-4 flex justify-between items-center">
                 <Link
-                    href="/courses"
+                    href="/"
                     aria-label="Mentor home"
-                    className="flex min-w-0 items-center"
+                    className="relative flex h-12 w-44 min-w-0 items-center overflow-hidden sm:w-48"
                     onClick={() => setIsMobileMenuOpen(false)}
                 >
-                    <span className="flex h-12 w-36 items-center justify-center overflow-hidden rounded-lg bg-white px-2">
-                        <Image
-                            src="/assets/mentor.png"
-                            alt="Mentor"
-                            width={1920}
-                            height={1280}
-                            priority
-                            className="h-full w-full object-contain"
-                        />
-                    </span>
+                    <Image
+                        src="/assets/Mainlogo.png"
+                        alt="Mentor"
+                        width={1920}
+                        height={1080}
+                        priority
+                        className="h-auto w-full object-contain"
+                    />
                 </Link>
 
                 <nav aria-label="Main navigation" className="hidden w-fit items-center gap-5 lg:flex">
                     {navItems.map(({ label, href }) => {
                         return (
-                            <Link href={href} key={label} className={cn('nav-link-base', isActive(href) ? 'nav-link-active' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]')}>
+                            <Link
+                                href={href}
+                                key={label}
+                                aria-current={isActive(href) ? "page" : undefined}
+                                className={cn('nav-link-base', isActive(href) ? 'nav-link-active' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]')}
+                            >
                                 {label}
                             </Link>
                         )
                     })}
 
-                    <div className="flex gap-7.5 items-center">
+                    <div className="flex items-center gap-4">
                         <SignedOut>
-                            <SignInButton mode="modal" />
+                            <Link href="/sign-in" className="nav-link-base text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]">
+                                Sign in
+                            </Link>
+                            <Link
+                                href="/sign-up"
+                                className="rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-[var(--navy-900)] transition-colors hover:bg-[var(--gold-hover)]"
+                            >
+                                Get started
+                            </Link>
                         </SignedOut>
                         <SignedIn>
-                            <div className="nav-user-link">
+                            <div className="flex items-center gap-3">
+                                <Link
+                                    href="/courses"
+                                    className="rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-[var(--navy-900)] transition-colors hover:bg-[var(--gold-hover)]"
+                                >
+                                    My courses
+                                </Link>
                                 <UserButton />
                                 {user?.firstName && (
-                                    <Link href="/subscriptions" className="nav-user-name">
+                                    <span className="nav-user-name text-[var(--ink-soft)]">
                                         {user.firstName}
-                                    </Link>
+                                    </span>
                                 )}
+                                <button
+                                    type="button"
+                                    onClick={handleSignOut}
+                                    className="nav-link-base text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
+                                >
+                                    Sign out
+                                </button>
                             </div>
                         </SignedIn>
                     </div>
@@ -97,16 +138,46 @@ const Navbar = () => {
                         ))}
                         <div className="mt-2 border-t border-[var(--navy-border)] pt-3">
                             <SignedOut>
-                                <SignInButton mode="modal" />
+                                <div className="flex gap-3 px-3">
+                                    <Link
+                                        href="/sign-in"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex min-h-11 flex-1 items-center justify-center rounded-lg border border-[var(--navy-border)] px-4 text-sm font-medium text-[var(--ink)]"
+                                    >
+                                        Sign in
+                                    </Link>
+                                    <Link
+                                        href="/sign-up"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex min-h-11 flex-1 items-center justify-center rounded-lg bg-[var(--gold)] px-4 text-sm font-semibold text-[var(--navy-900)]"
+                                    >
+                                        Get started
+                                    </Link>
+                                </div>
                             </SignedOut>
                             <SignedIn>
-                                <div className="flex items-center gap-3 px-3">
-                                    <UserButton />
-                                    {user?.firstName && (
-                                        <Link href="/subscriptions" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[var(--ink)]">
-                                            {user.firstName}
-                                        </Link>
-                                    )}
+                                <div className="flex flex-col gap-2 px-3">
+                                    <div className="flex items-center gap-3 py-2">
+                                        <UserButton />
+                                        <span className="text-sm font-medium text-[var(--ink)]">
+                                            {user?.firstName ?? "Your account"}
+                                        </span>
+                                    </div>
+                                    <Link
+                                        href="/courses"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex min-h-11 items-center justify-center rounded-lg bg-[var(--gold)] px-4 text-sm font-semibold text-[var(--navy-900)]"
+                                    >
+                                        My courses
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        onClick={handleSignOut}
+                                        className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[var(--navy-border)] px-4 text-sm font-medium text-[var(--ink)]"
+                                    >
+                                        <LogOut className="size-4" />
+                                        Sign out
+                                    </button>
                                 </div>
                             </SignedIn>
                         </div>
