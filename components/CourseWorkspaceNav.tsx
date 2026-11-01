@@ -236,13 +236,15 @@ export default function CourseWorkspaceNav({
             >
                 <div className="border-b border-[var(--navy-border)] p-3">
                     <div className={cn("mb-3 flex items-center gap-2", collapsed && "justify-center")}>
-                        <Image
-                            src="/assets/mainlogo-mark.svg"
-                            alt="Mentor"
-                            width={640}
-                            height={640}
-                            className="size-10 shrink-0 object-contain"
-                        />
+                        <span aria-hidden="true" className="relative h-12 w-8 shrink-0 overflow-hidden">
+                            <Image
+                                src="/assets/Mainlogo.png"
+                                alt=""
+                                width={1920}
+                                height={1080}
+                                className="absolute left-0 top-0 h-12 w-auto max-w-none"
+                            />
+                        </span>
                     </div>
                     <div className={cn("flex items-center gap-2", collapsed && "justify-center")}>
                     <Link href="/courses" aria-label="All courses" title="All courses" className="icon-btn">
@@ -284,8 +286,14 @@ export default function CourseWorkspaceNav({
                     >
                         <div className="border-b border-[var(--navy-border)] p-3">
                             <div className="mb-3 flex items-center gap-2">
-                                <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1">
-                                    <Image src="/assets/mentor-icon.png" alt="Mentor" width={1024} height={1024} className="size-full object-contain" />
+                                <span aria-hidden="true" className="relative h-12 w-8 shrink-0 overflow-hidden">
+                                    <Image
+                                        src="/assets/Mainlogo.png"
+                                        alt=""
+                                        width={1920}
+                                        height={1080}
+                                        className="absolute left-0 top-0 h-12 w-auto max-w-none"
+                                    />
                                 </span>
                                 <span className="text-sm font-bold tracking-wide text-[var(--ink)]">Mentor</span>
                             </div>
