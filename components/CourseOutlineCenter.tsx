@@ -335,15 +335,58 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
         setIsDirty(true);
     };
 
+    const persistTopics = async (topics: Topic[], successMessage: string) => {
+        if (!outline || isSaving) return;
+        setError("");
+        setNotice("");
+        setIsSaving(true);
+        try {
+            const response = await fetch(`/api/courses/${courseId}/outline/topics`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    expectedUpdatedAt: outline.updatedAt,
+                    topics: topics.map((topic) => ({
+                        id: topic.id,
+                        name: topic.name,
+                        description: topic.description,
+                        status: topic.status,
+                        materialIds: topic.materialIds,
+                        subtopics: topic.subtopics.map((subtopic) => ({
+                            id: subtopic.id,
+                            name: subtopic.name,
+                            description: subtopic.description,
+                            materialIds: subtopic.materialIds,
+                        })),
+                    })),
+                }),
+            });
+            const result: unknown = await response.json();
+            if (!response.ok) throw new Error(errorText(result, "Could not delete from the outline."));
+            setOutline((result as { outline: Outline }).outline);
+            setIsDirty(false);
+            setNotice(successMessage);
+        } catch (deleteError) {
+            console.error("Failed to delete outline topics:", deleteError);
+            setError(deleteError instanceof Error ? deleteError.message : "Could not delete from the outline.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    // Subtopics live inside their topic, so removing a topic removes them too.
     const deleteTopic = (topic: Topic) => {
-        if (!outline || !window.confirm(`Delete "${topic.name || "this topic"}" and its subtopics? This cannot be undone.`)) return;
-        setOutline({
-            ...outline,
-            topics: outline.topics
-                .filter((item) => item.id !== topic.id)
-                .map((item, order) => ({ ...item, order })),
-        });
-        setIsDirty(true);
+        if (!outline || !window.confirm(`Delete "${topic.name || "this topic"}" and its ${topic.subtopics.length} subtopic(s)? This cannot be undone.`)) return;
+        void persistTopics(
+            outline.topics.filter((item) => item.id !== topic.id).map((item, order) => ({ ...item, order })),
+            `Deleted "${topic.name || "topic"}" and its subtopics.`,
+        );
+    };
+
+    const deleteAllTopics = () => {
+        if (!outline || outline.topics.length === 0) return;
+        if (!window.confirm(`Delete all ${outline.topics.length} topics and every subtopic under them? This cannot be undone.`)) return;
+        void persistTopics([], "All topics and subtopics were deleted.");
     };
 
     const addSubtopic = (topicId: string) => changeTopic(topicId, (topic) => ({
@@ -470,6 +513,14 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
                         <div className="flex gap-2">
                             <button type="button" onClick={addTopic} className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-[#663820]/30 px-3 py-2 text-sm font-semibold text-[#663820] hover:bg-[#fff6e5]">
                                 <Plus className="size-4" /> Add topic
+                            </button>
+                            <button
+                                type="button"
+                                onClick={deleteAllTopics}
+                                disabled={isSaving || outline.topics.length === 0}
+                                className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <Trash2 className="size-4" /> Delete all
                             </button>
                             <button
                                 type="button"
