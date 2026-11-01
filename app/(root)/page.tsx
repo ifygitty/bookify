@@ -39,7 +39,7 @@ export default async function Page() {
 
     return (
         <main id="top" className="landing-root relative overflow-x-clip text-[var(--ink)]">
-            <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+            <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28 lg:px-8">
                 <HeroCarousel ctaLabel={ctaLabel} ctaHref={ctaHref} />
             </section>
 

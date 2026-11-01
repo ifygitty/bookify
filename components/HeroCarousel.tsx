@@ -103,7 +103,7 @@ export default function HeroCarousel({ ctaLabel, ctaHref }: { ctaLabel: string; 
                                 style={{ objectPosition: slide.position }}
                                 className="object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--navy-900)] via-[var(--navy-900)]/55 to-[var(--navy-900)]/10 lg:bg-gradient-to-r lg:via-[var(--navy-900)]/50 lg:to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--navy-900)]/70 via-[var(--navy-900)]/20 to-transparent lg:bg-gradient-to-r lg:via-[var(--navy-900)]/15 lg:to-transparent" />
                             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(23,107,67,0.25),transparent_55%)]" />
 
                             {i === 0 && (
