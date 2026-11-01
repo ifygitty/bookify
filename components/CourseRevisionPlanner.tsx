@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
     AlertTriangle,
     CalendarDays,
@@ -773,9 +774,9 @@ export default function CourseRevisionPlanner({
                 </div>
             )}
 
-            {isFormOpen && data && (
+            {isFormOpen && data && typeof document !== "undefined" && createPortal(
                 <div
-                    className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
+                    className="fixed inset-0 z-[100] flex items-end justify-center overflow-x-hidden bg-[#030a14]/80 p-0 sm:items-center sm:p-4"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="revision-form-title"
@@ -783,7 +784,7 @@ export default function CourseRevisionPlanner({
                         if (event.key === "Escape") closeForm();
                     }}
                 >
-                    <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:rounded-2xl sm:p-6">
+                    <div className="max-h-[92dvh] w-full min-w-0 max-w-2xl overflow-x-hidden overflow-y-auto rounded-t-2xl bg-white p-4 text-[#212a3b] shadow-xl sm:rounded-2xl sm:p-6">
                         <div className="flex items-start justify-between gap-3">
                             <h3 id="revision-form-title" className="text-lg font-semibold text-[#212a3b]">
                                 {editingPlan ? "Update revision plan" : "Create revision plan"}
@@ -861,7 +862,7 @@ export default function CourseRevisionPlanner({
                                         maxLength={100}
                                         onChange={(event) => updateForm({ title: event.target.value })}
                                         placeholder="e.g. Final exam"
-                                        className="mt-1 w-full rounded-xl border border-[#212a3b]/15 px-3 py-2.5 text-sm"
+                                        className="mt-1 w-full rounded-xl border border-[#212a3b]/15 bg-white px-3 py-2.5 text-sm text-[#212a3b]"
                                     />
                                 </label>
 
@@ -881,7 +882,7 @@ export default function CourseRevisionPlanner({
                                         min={today}
                                         onChange={(event) => updateForm({ targetDate: event.target.value })}
                                         aria-label="Exam or target date"
-                                        className="mt-3 rounded-xl border border-[#212a3b]/15 px-3 py-2.5 text-sm"
+                                        className="mt-3 w-full max-w-full rounded-xl border border-[#212a3b]/15 bg-white px-3 py-2.5 text-sm text-[#212a3b] sm:w-auto"
                                     />
                                 </fieldset>
 
@@ -892,7 +893,7 @@ export default function CourseRevisionPlanner({
                                             const minutes = form.minutes[weekday];
                                             const selected = minutes !== undefined;
                                             return (
-                                                <div key={label} className={`flex items-center gap-3 rounded-xl border px-3 py-2 ${selected ? "border-[#663820] bg-[#fff6e5]" : "border-[#212a3b]/10"}`}>
+                                                <div key={label} className={`flex min-w-0 items-center gap-3 rounded-xl border px-3 py-2 ${selected ? "border-[#663820] bg-[#fff6e5]" : "border-[#212a3b]/10"}`}>
                                                     <label className="flex flex-1 items-center gap-2 text-sm font-medium">
                                                         <input
                                                             type="checkbox"
@@ -992,7 +993,8 @@ export default function CourseRevisionPlanner({
                             </form>
                         )}
                     </div>
-                </div>
+                </div>,
+                document.body,
             )}
         </section>
     );

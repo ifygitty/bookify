@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
     ArrowDown,
     ArrowUp,
@@ -609,11 +610,11 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
                 </div>
             )}
 
-            {step && (
-                <div className="fixed inset-0 z-[70] flex items-end justify-center bg-[#212a3b]/50 p-0 sm:items-center sm:p-4" role="presentation" onMouseDown={(event) => {
+            {step && typeof document !== "undefined" && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-end justify-center bg-[#030a14]/80 p-0 sm:items-center sm:p-4" role="presentation" onMouseDown={(event) => {
                     if (event.target === event.currentTarget && !isGenerating && !isSaving) setStep(null);
                 }}>
-                    <section role="dialog" aria-modal="true" aria-labelledby="outline-modal-title" className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
+                    <section role="dialog" aria-modal="true" aria-labelledby="outline-modal-title" className="relative flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
                         <header className="flex items-start justify-between gap-3 border-b border-[#212a3b]/10 px-4 py-4 sm:px-6">
                             <div>
                                 <h2 id="outline-modal-title" className="text-lg font-bold text-[#212a3b] sm:text-xl">
@@ -739,8 +740,16 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
                                 </button>
                             ) : null}
                         </footer>
+                        {isGenerating && (
+                            <div role="status" aria-live="polite" className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/95 p-6 text-center">
+                                <LoaderCircle className="size-10 animate-spin text-[#663820]" />
+                                <p className="text-base font-bold text-[#212a3b]">Creating your course outline…</p>
+                                <p className="max-w-xs text-sm text-[#3d485e]">Analyzing the selected materials. This can take a minute — please keep this window open.</p>
+                            </div>
+                        )}
                     </section>
-                </div>
+                </div>,
+                document.body,
             )}
         </section>
     );
