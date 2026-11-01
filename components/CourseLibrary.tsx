@@ -100,14 +100,14 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
 
     return (
         <div className="space-y-8">
-            <section id="create-course" className="rounded-2xl border border-[#212a3b]/10 bg-white p-6 shadow-soft-sm sm:p-8">
+            <section id="create-course" className="glass glass-green border-light scroll-mt-28 rounded-3xl p-5 sm:p-8">
                 <div className="mb-5 flex items-start gap-4">
-                    <div className="rounded-xl bg-[#f3e4c7] p-3 text-[#663820]">
+                    <div className="icon-tile size-12 shrink-0">
                         <Plus className="size-5" />
                     </div>
-                    <div>
-                        <h2 className="text-xl font-semibold">Create a course or subject</h2>
-                        <p className="mt-1 text-sm text-[#3d485e]">For example, ACC 101 or Introduction to Economics.</p>
+                    <div className="min-w-0">
+                        <h2 className="mentor-title text-xl font-bold">Create a course or subject</h2>
+                        <p className="mt-1 text-sm text-[var(--ink-soft)]">For example, ACC 101 or Introduction to Economics.</p>
                     </div>
                 </div>
                 <form onSubmit={createCourse} className="flex flex-col gap-3 sm:flex-row">
@@ -118,41 +118,41 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
                         onChange={(event) => setName(event.target.value)}
                         maxLength={100}
                         placeholder="Enter a course name"
-                        className="min-h-12 min-w-0 flex-1 rounded-xl border border-[#212a3b]/15 bg-[#fffdf8] px-4 text-base outline-none transition focus:border-[#663820] focus:ring-2 focus:ring-[#663820]/15"
+                        className="mentor-input flex-1"
                         required
                     />
-                    <button type="submit" disabled={isCreating || !name.trim()} className="btn-primary disabled:cursor-not-allowed disabled:opacity-60">
+                    <button type="submit" disabled={isCreating || !name.trim()} className="mentor-cta disabled:cursor-not-allowed disabled:opacity-60">
                         {isCreating ? <LoaderCircle className="size-5 animate-spin" /> : <Plus className="size-5" />}
                         Create course
                     </button>
                 </form>
-                {error && <p role="alert" className="mt-3 text-sm font-medium text-red-700">{error}</p>}
+                {error && <p role="alert" className="mt-3 text-sm font-medium text-red-500">{error}</p>}
             </section>
 
             {initialCourses.length > 0 && (
                 <section>
-                    <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-2xl font-semibold">Your courses</h2>
-                        <span className="text-sm text-[#3d485e]">{initialCourses.length} total</span>
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                        <h2 className="mentor-title text-2xl font-bold">Your courses</h2>
+                        <span className="rounded-full border border-[var(--glass-border)] px-3 py-1 text-xs font-semibold text-[var(--ink-soft)]">{initialCourses.length} total</span>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
                         {initialCourses.map((course) => (
                             <article
                                 key={course.id}
-                                className="rounded-2xl border border-[#212a3b]/10 bg-white p-5 shadow-soft-sm transition hover:-translate-y-0.5 hover:shadow-soft"
+                                className="glass glass-green border-light course-card min-w-0 rounded-3xl p-5"
                             >
                                 <Link href={`/courses/${course.id}`} className="group block">
-                                    <div className="mb-5 flex items-center justify-between">
-                                        <div className="rounded-xl bg-[#f3e4c7] p-3 text-[#663820]">
+                                    <div className="mb-5 flex items-center justify-between gap-3">
+                                        <div className="icon-tile size-12 shrink-0">
                                             <BookOpen className="size-5" />
                                         </div>
-                                        <span className="rounded-full bg-[#f8f4e9] px-3 py-1 text-xs font-semibold text-[#3d485e]">
+                                        <span className="rounded-full border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--accent-gold)]">
                                             {course.materials.length} {course.materials.length === 1 ? "material" : "materials"}
                                         </span>
                                     </div>
-                                    <h3 className="text-xl font-semibold group-hover:text-[#663820]">{course.name}</h3>
-                                    <p className="mt-2 flex items-center gap-2 text-sm text-[#3d485e]">
-                                        <FileText className="size-4" />
+                                    <h3 className="mentor-title break-words text-xl font-bold text-[var(--ink)] transition-colors group-hover:text-[var(--gold)]">{course.name}</h3>
+                                    <p className="mt-2 flex items-center gap-2 text-sm text-[var(--ink-soft)]">
+                                        <FileText className="size-4 shrink-0" />
                                         {course.materials.length === 0
                                             ? "No materials added yet"
                                             : `${course.materials.length} ${course.materials.length === 1 ? "material" : "materials"}`}
@@ -166,14 +166,14 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
                                             value={editedCourseName}
                                             onChange={(event) => setEditedCourseName(event.target.value)}
                                             maxLength={100}
-                                            className="min-w-0 flex-1 rounded-lg border border-[#212a3b]/15 px-3 py-2 text-sm"
+                                            className="mentor-input flex-1 !min-h-11 !text-sm"
                                             required
                                             autoFocus
                                         />
-                                        <button type="submit" disabled={busyCourseId !== null} className="rounded-lg bg-[#663820] px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                                        <button type="submit" disabled={busyCourseId !== null} className="mentor-cta !min-h-11 !rounded-xl !px-4 !py-2 !text-sm disabled:opacity-50">
                                             {busyCourseId === course.id ? "Saving..." : "Save"}
                                         </button>
-                                        <button type="button" onClick={() => setEditingCourseId(null)} disabled={busyCourseId !== null} className="rounded-lg border border-[#212a3b]/15 px-3 py-2 text-sm font-semibold disabled:opacity-50">
+                                        <button type="button" onClick={() => setEditingCourseId(null)} disabled={busyCourseId !== null} className="min-h-11 rounded-xl border border-[var(--glass-border)] px-4 py-2 text-sm font-semibold text-[var(--ink)] hover:bg-[var(--gold)]/10 disabled:opacity-50">
                                             Cancel
                                         </button>
                                     </form>
@@ -189,7 +189,7 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
                                             disabled={busyCourseId !== null}
                                             aria-label={`Edit name of ${course.name}`}
                                             title="Edit name"
-                                            className="icon-btn border border-[var(--navy-border)] disabled:opacity-50"
+                                            className="card-action"
                                         >
                                             <Pencil className="size-4" />
                                         </button>
@@ -199,7 +199,7 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
                                             disabled={busyCourseId !== null}
                                             aria-label={`Delete ${course.name}`}
                                             title="Delete course"
-                                            className="icon-btn icon-btn-danger border border-[var(--navy-border)] disabled:opacity-50"
+                                            className="card-action card-action-danger"
                                         >
                                             {busyCourseId === course.id ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
                                         </button>
@@ -208,7 +208,7 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
                             </article>
                         ))}
                     </div>
-                    {courseActionError && <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{courseActionError}</p>}
+                    {courseActionError && <p role="alert" className="mt-4 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-500">{courseActionError}</p>}
                 </section>
             )}
         </div>

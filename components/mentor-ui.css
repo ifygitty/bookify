@@ -1,0 +1,199 @@
+/* Shared Mentor chrome: navbar glass and course page surfaces. */
+
+/* Navbar: dark-green glass in both themes so the logo's light parts stay visible.
+   Re-declaring the dark tokens here makes every child (toggle, buttons, menu) readable. */
+.mentor-nav {
+  --ink: #f1f8f2;
+  --ink-soft: #cfe6d6;
+  --gold: #b7f7c5;
+  --gold-hover: #ddf8e5;
+  --navy-900: #0d3d29;
+  --navy-800: #0f4a32;
+  --navy-700: #155a3c;
+  --navy-600: #1b6a46;
+  --navy-border: rgba(183, 247, 197, 0.28);
+  color: var(--ink);
+  background: rgba(13, 61, 41, 0.78);
+  border-bottom: 1px solid rgba(183, 247, 197, 0.25);
+  box-shadow: 0 8px 28px -14px rgba(13, 61, 41, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+:root:not(.light) .mentor-nav {
+  background: var(--glass-bg);
+  --navy-900: #071b14;
+  --navy-800: #10271e;
+  --navy-700: #183d2c;
+  --navy-600: #1d4a35;
+}
+
+.mentor-nav .nav-link-base {
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.mentor-nav .nav-link-base:hover {
+  color: var(--gold-hover);
+}
+
+.mentor-nav-logo {
+  filter: drop-shadow(0 1px 6px rgba(183, 247, 197, 0.25));
+}
+
+/* Course page */
+.mentor-page {
+  position: relative;
+  overflow-x: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(183, 247, 197, 0.16), transparent 65%),
+    radial-gradient(50rem 28rem at -10% 40%, rgba(23, 107, 67, 0.12), transparent 65%);
+}
+
+:root.light .mentor-page {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(183, 247, 197, 0.55), transparent 65%),
+    radial-gradient(50rem 28rem at -10% 40%, rgba(221, 248, 229, 0.9), transparent 65%),
+    linear-gradient(180deg, #fbf8ee 0%, #f5fbf6 55%);
+}
+
+.mentor-page > .mentor-page-content {
+  position: relative;
+  z-index: 1;
+}
+
+.mentor-title {
+  font-family: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.mentor-cta {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.875rem;
+  padding: 0.75rem 1.4rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--navy-900);
+  background: linear-gradient(135deg, var(--gold-hover), var(--gold));
+  box-shadow: 0 10px 24px -10px rgba(23, 107, 67, 0.6);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.mentor-cta:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -10px rgba(23, 107, 67, 0.7);
+  filter: brightness(1.05);
+}
+
+.mentor-cta:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.mentor-input {
+  min-height: 3rem;
+  width: 100%;
+  min-width: 0;
+  border-radius: 0.875rem;
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--navy-800) 70%, transparent);
+  color: var(--ink);
+  padding: 0 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.mentor-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.8;
+}
+
+.mentor-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 25%, transparent);
+}
+
+.icon-tile {
+  display: grid;
+  place-items: center;
+  border-radius: 0.875rem;
+  color: var(--gold);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--gold) 22%, transparent), color-mix(in srgb, var(--gold) 6%, transparent));
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+}
+
+.course-card {
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.course-card:hover,
+.course-card:focus-within {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 22px 44px -20px rgba(13, 61, 41, 0.5);
+}
+
+/* The travelling light shows only when a card is hovered or focused */
+.course-card.border-light::before {
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.course-card.border-light:hover::before,
+.course-card.border-light:focus-within::before {
+  opacity: 1;
+}
+
+.card-action {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  color: var(--ink-soft);
+  background: transparent;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.card-action:hover:not(:disabled) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+}
+
+.card-action-danger:hover:not(:disabled) {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.card-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mentor-cta,
+  .course-card,
+  .course-card.border-light::before,
+  .card-action {
+    transition: none;
+  }
+
+  .mentor-cta:hover:not(:disabled),
+  .course-card:hover,
+  .course-card:focus-within {
+    transform: none;
+  }
+
+  .course-card.border-light::before {
+    opacity: 1;
+  }
+}

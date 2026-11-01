@@ -1,0 +1,227 @@
+/* Mentor landing page: glass surfaces, travelling border light, reveal and carousel motion. */
+
+html {
+  scroll-behavior: smooth;
+}
+
+.landing-root {
+  position: relative;
+  overflow-x: clip;
+  background: var(--navy-900);
+  color: var(--ink);
+}
+
+.landing-root h1,
+.landing-root h2,
+.landing-root h3 {
+  font-family: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Decorative layers: always behind content and never interactive */
+.deco {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.deco-orb {
+  border-radius: 9999px;
+  filter: blur(60px);
+  background: radial-gradient(circle, var(--glow), transparent 70%);
+}
+
+.deco-orb-gold {
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2), transparent 70%);
+}
+
+.deco-spin {
+  animation: deco-spin 90s linear infinite;
+}
+
+@keyframes deco-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Glass surfaces */
+.glass {
+  position: relative;
+  background:
+    linear-gradient(135deg, var(--glass-highlight), transparent 55%),
+    var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 18px 40px -18px rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.glass-green {
+  background:
+    linear-gradient(135deg, rgba(183, 247, 197, 0.14), transparent 60%),
+    var(--glass-bg);
+}
+
+:root.light .glass-green {
+  background:
+    linear-gradient(135deg, rgba(183, 247, 197, 0.5), rgba(255, 255, 255, 0.4)),
+    var(--glass-bg);
+}
+
+.glass-gold {
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px rgba(212, 175, 55, 0.12),
+    0 18px 40px -18px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 640px) {
+  .glass {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Light travelling around the border */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.border-light {
+  position: relative;
+}
+
+.border-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0deg,
+    transparent 292deg,
+    rgba(155, 233, 174, 0.15) 316deg,
+    rgba(183, 247, 197, 0.95) 342deg,
+    rgba(212, 175, 55, 0.85) 352deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: border-light-spin 7s linear infinite;
+}
+
+:root.light .border-light::before {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0deg,
+    transparent 292deg,
+    rgba(23, 107, 67, 0.12) 316deg,
+    rgba(23, 107, 67, 0.9) 342deg,
+    rgba(185, 145, 37, 0.85) 352deg,
+    transparent 360deg
+  );
+}
+
+@keyframes border-light-spin {
+  to { --border-angle: 360deg; }
+}
+
+/* Scroll reveal */
+.landing-reveal[data-landing-enhanced="true"][data-landing-visible="false"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.landing-reveal[data-landing-enhanced="true"] {
+  transition: opacity 560ms ease, transform 560ms ease;
+}
+
+.landing-reveal[data-landing-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.landing-card {
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.landing-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+}
+
+.hero-enter {
+  animation: hero-enter 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes hero-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Hero carousel */
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(3%);
+  transition: opacity 700ms ease, transform 700ms ease, visibility 0s linear 700ms;
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 700ms ease, transform 700ms ease, visibility 0s;
+}
+
+.slide[data-before="true"] {
+  transform: translateX(-3%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .slide,
+  .slide[data-active="true"] {
+    transition: none;
+    transform: none;
+  }
+
+  .landing-reveal[data-landing-enhanced="true"],
+  .landing-card,
+  .hero-enter,
+  .deco-spin {
+    transition: none;
+    animation: none;
+  }
+
+  .landing-card:hover {
+    transform: none;
+  }
+
+  /* Static, elegant border instead of a moving light */
+  .border-light::before {
+    animation: none;
+    background: linear-gradient(135deg, rgba(183, 247, 197, 0.7), rgba(212, 175, 55, 0.5));
+  }
+
+  :root.light .border-light::before {
+    background: linear-gradient(135deg, rgba(23, 107, 67, 0.7), rgba(185, 145, 37, 0.5));
+  }
+}

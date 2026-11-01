@@ -7,6 +7,8 @@ import { useState } from "react";
 import { SignedIn, SignedOut, UserButton, useClerk, useUser } from "@clerk/nextjs";
 import { LogOut, Menu, X } from "lucide-react";
 import {cn} from "@/lib/utils";
+import ThemeToggle from "@/components/ThemeToggle";
+import "@/components/mentor-ui.css";
 
 const publicNavItems = [
     { label: "Home", href: "/#top" },
@@ -40,7 +42,7 @@ const Navbar = () => {
     };
 
     return (
-        <header className="fixed z-50 w-full border-b border-[var(--navy-border)] bg-[var(--navy-900)]">
+        <header className="mentor-nav fixed z-50 w-full">
             <div className="wrapper navbar-height py-4 flex justify-between items-center">
                 <Link
                     href="/"
@@ -54,7 +56,7 @@ const Navbar = () => {
                         width={1920}
                         height={1080}
                         priority
-                        className="h-auto w-full object-contain"
+                        className="mentor-nav-logo h-auto w-full object-contain"
                     />
                 </Link>
 
@@ -73,6 +75,7 @@ const Navbar = () => {
                     })}
 
                     <div className="flex items-center gap-4">
+                        <ThemeToggle />
                         <SignedOut>
                             <Link href="/sign-in" className="nav-link-base text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]">
                                 Sign in
@@ -81,7 +84,7 @@ const Navbar = () => {
                                 href="/sign-up"
                                 className="rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-[var(--navy-900)] transition-colors hover:bg-[var(--gold-hover)]"
                             >
-                                Get started
+                                Start Learning
                             </Link>
                         </SignedOut>
                         <SignedIn>
@@ -109,16 +112,19 @@ const Navbar = () => {
                         </SignedIn>
                     </div>
                 </nav>
+                <div className="flex items-center gap-2 lg:hidden">
+                <ThemeToggle />
                 <button
                     type="button"
                     aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
                     aria-expanded={isMobileMenuOpen}
                     aria-controls="mobile-main-navigation"
                     onClick={() => setIsMobileMenuOpen((open) => !open)}
-                    className="icon-btn size-11 shrink-0 border border-[var(--navy-border)] lg:hidden"
+                    className="icon-btn size-11 shrink-0 border border-[var(--navy-border)]"
                 >
                     {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
                 </button>
+                </div>
             </div>
             {isMobileMenuOpen && (
                 <div id="mobile-main-navigation" className="anim-rise max-h-[calc(100dvh-var(--navbar-height))] overflow-y-auto border-t border-[var(--navy-border)] bg-[var(--navy-800)] px-4 pb-4 pt-2 shadow-lg lg:hidden">
@@ -151,7 +157,7 @@ const Navbar = () => {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className="flex min-h-11 flex-1 items-center justify-center rounded-lg bg-[var(--gold)] px-4 text-sm font-semibold text-[var(--navy-900)]"
                                     >
-                                        Get started
+                                        Start Learning
                                     </Link>
                                 </div>
                             </SignedOut>

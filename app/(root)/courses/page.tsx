@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Plus, BookOpen } from "lucide-react";
+import { Plus, GraduationCap } from "lucide-react";
+import "@/components/landing.css";
+import "@/components/mentor-ui.css";
+import { ConcentricCircles, FlowingCurves, GlowOrb, OrbitalRings } from "@/components/LandingDecor";
 import { connectToDatabase } from "@/database/mongoose";
 import Course, { type CourseMaterialRecord } from "@/database/models/course.model";
 import CourseLibrary from "@/components/CourseLibrary";
@@ -31,19 +34,24 @@ export default async function CoursesPage() {
    
 
     return (
-        <main className="container wrapper">
-            <div className="mx-auto max-w-5xl">
+        <main className="mentor-page wrapper !max-w-none !px-0 !pb-16 !pt-28 sm:!pt-32">
+            <ConcentricCircles className="-right-40 -top-32 size-[30rem] opacity-60" />
+            <FlowingCurves className="inset-x-0 top-24 h-56 w-full opacity-50" />
+            <OrbitalRings className="-left-48 bottom-10 size-[28rem] opacity-40" />
+            <GlowOrb className="left-1/3 top-40 size-72" />
+
+            <div className="mentor-page-content mx-auto max-w-5xl px-4 sm:px-6">
                 <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-[#663820]">
+                    <div className="min-w-0">
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-gold)] sm:text-sm">
                             Your study space
                         </p>
-                        <h1 className="page-title-xl">My courses</h1>
-                        <p className="subtitle mt-3 max-w-2xl">
+                        <h1 className="mentor-title text-4xl font-extrabold sm:text-5xl">My Courses</h1>
+                        <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--ink-soft)]">
                             Bring your course study materials together and learn with Mentor AI.
                         </p>
                     </div>
-                    <Link href="#create-course" className="btn-primary w-fit">
+                    <Link href="#create-course" className="mentor-cta w-full sm:w-fit">
                         <Plus className="size-5" />
                         Add a course
                     </Link>
@@ -52,10 +60,12 @@ export default async function CoursesPage() {
                 <CourseLibrary initialCourses={initialCourses} />
 
                 {initialCourses.length === 0 && (
-                    <div className="mt-8 rounded-2xl border border-dashed border-[#212a3b]/20 bg-white/70 px-6 py-12 text-center">
-                        <BookOpen className="mx-auto mb-4 size-10 text-[#663820]" />
-                        <h2 className="text-xl font-semibold">Start with your first subject</h2>
-                        <p className="mt-2 text-[#3d485e]">
+                    <div className="glass glass-green mt-8 rounded-3xl px-6 py-12 text-center">
+                        <span className="icon-tile mx-auto mb-4 size-16">
+                            <GraduationCap className="size-8" />
+                        </span>
+                        <h2 className="mentor-title text-xl font-bold">Start with your first subject</h2>
+                        <p className="mt-2 text-[var(--ink-soft)]">
                             Create a course such as ACC 101, then add the materials you study from.
                         </p>
                     </div>

@@ -52,17 +52,23 @@
   --font-mona-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-ibm-plex-serif: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* Navy & Dark Gold palette */
-  --navy-900: #071426;
-  --navy-800: #091a33;
-  --navy-700: #102440;
-  --navy-600: #162e4f;
-  --navy-inset: #0b1b32;
-  --navy-border: #243a56;
-  --gold: #d4af37;
-  --gold-hover: #e8c45a;
-  --ink: #f4f6fa;
-  --ink-soft: #a8b4c7;
+  /* Mentor palette. Token names (--navy-*, --gold) are kept for existing components:
+     --navy-* are surfaces and --gold is the primary brand colour (green). Dark theme is the default. */
+  --navy-900: #071b14;
+  --navy-800: #0b2219;
+  --navy-700: #10271e;
+  --navy-600: #183d2c;
+  --navy-inset: #0a1f17;
+  --navy-border: #294536;
+  --gold: #b7f7c5;
+  --gold-hover: #9be9ae;
+  --ink: #f1f8f2;
+  --ink-soft: #a6b9ac;
+  --accent-gold: #d4af37;
+  --glass-bg: rgba(16, 39, 30, 0.55);
+  --glass-border: rgba(183, 247, 197, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.06);
+  --glow: rgba(155, 233, 174, 0.22);
   --success-color: #34d399;
   --warning-color: #fbbf24;
   --error-color: #f87171;
@@ -79,13 +85,13 @@
 
   --accent-warm: var(--gold);
   --accent-warm-hover: var(--gold-hover);
-  --accent-light: rgba(212, 175, 55, 0.12);
+  --accent-light: rgba(183, 247, 197, 0.12);
 
   --success: var(--success-color);
   --warning: var(--warning-color);
 
   --border-subtle: var(--navy-border);
-  --border-medium: #33507a;
+  --border-medium: #3a5f49;
 
   /* Restrained shadows */
   --shadow-soft-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
@@ -188,7 +194,89 @@
   --color-gray-900: #f4f6fa;
 }
 
+/* Light theme: same tokens, different values. */
+:root.light {
+  --navy-900: #f5fbf6;
+  --navy-800: #e9f8ed;
+  --navy-700: #ffffff;
+  --navy-600: #ddf8e5;
+  --navy-inset: #eef8f0;
+  --navy-border: #d8e9dc;
+  --gold: #176b43;
+  --gold-hover: #0f5632;
+  --ink: #14251b;
+  --ink-soft: #66776b;
+  --accent-gold: #b99125;
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-border: rgba(23, 107, 67, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.8);
+  --glow: rgba(23, 107, 67, 0.18);
+  --accent-light: rgba(23, 107, 67, 0.1);
+  --border-medium: #bcd7c3;
+  --shadow-soft-sm: 0 1px 2px rgba(20, 37, 27, 0.08);
+  --shadow-soft: 0 2px 8px rgba(20, 37, 27, 0.1);
+  --shadow-soft-md: 0 4px 14px rgba(20, 37, 27, 0.12);
+  --shadow-soft-lg: 0 8px 28px rgba(20, 37, 27, 0.16);
+  --shadow-book: 0 10px 30px rgba(20, 37, 27, 0.15);
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-amber-950: #451a03;
+  --color-yellow-50: #fefce8;
+  --color-yellow-700: #a16207;
+  --color-yellow-800: #854d0e;
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065f46;
+  --color-blue-50: #eff6ff;
+  --color-blue-700: #1d4ed8;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+}
+
+html {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
 @layer base {
+  h1, h2, h3, .font-display {
+    font-family: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  }
   * {
     @apply border-border outline-ring/50;
   }
@@ -299,7 +387,7 @@
 
   /* Button utilities */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-white font-bold rounded-[10px] transition-colors;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-[var(--navy-900)] font-bold rounded-[10px] transition-colors;
     font-family: 'IBM Plex Serif', serif;
   }
   .btn-secondary {

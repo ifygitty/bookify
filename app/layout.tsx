@@ -1,14 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import Navbar from "@/components/Navbar";
+import ThemeProvider from "@/components/ThemeProvider";
 import "./globals.css";
 import {Toaster} from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -25,8 +32,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#071426",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#071b14" },
+    { media: "(prefers-color-scheme: light)", color: "#f5fbf6" },
+  ],
 };
 
 const clerkAppearance = {
@@ -34,17 +43,17 @@ const clerkAppearance = {
     logoImageUrl: "/assets/Mainlogo.png",
   },
   variables: {
-    colorPrimary: "#D4AF37",
-    colorBackground: "#102440",
-    colorText: "#F4F6FA",
-    colorTextSecondary: "#A8B4C7",
-    colorTextOnPrimaryBackground: "#071426",
-    colorInputBackground: "#0B1B32",
-    colorInputText: "#F4F6FA",
-    colorNeutral: "#F4F6FA",
-    colorDanger: "#F87171",
-    colorSuccess: "#34D399",
-    colorWarning: "#FBBF24",
+    colorPrimary: "var(--gold)",
+    colorBackground: "var(--navy-700)",
+    colorText: "var(--ink)",
+    colorTextSecondary: "var(--ink-soft)",
+    colorTextOnPrimaryBackground: "var(--navy-900)",
+    colorInputBackground: "var(--navy-inset)",
+    colorInputText: "var(--ink)",
+    colorNeutral: "var(--ink)",
+    colorDanger: "#f87171",
+    colorSuccess: "#34d399",
+    colorWarning: "#fbbf24",
     borderRadius: "0.75rem",
   },
 };
@@ -62,13 +71,15 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/courses"
       signUpFallbackRedirectUrl="/courses"
     >
-        <html lang="en" className={`dark ${inter.variable}`}>
+        <html lang="en" className={`${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
           <body
             className="relative font-sans antialiased"
           >
-            <Navbar />
-            {children}
-            <Toaster />
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              <Navbar />
+              {children}
+              <Toaster />
+            </ThemeProvider>
           </body>
         </html>
     </ClerkProvider>

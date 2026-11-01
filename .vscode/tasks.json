@@ -591,6 +591,36 @@
 				"C:\\Users\\USER\\testing bookified\\app\\icon.png"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "Remove old landing page file",
+			"type": "shell",
+			"command": "node -e \"require('fs').unlinkSync('app/(root)/page.tsx')\""
+		},
+		{
+			"label": "Delete landing page tsx",
+			"type": "shell",
+			"command": "Remove-Item -LiteralPath 'app/(root)/page.tsx'"
+		},
+		{
+			"label": "Landing lint check",
+			"type": "shell",
+			"command": "npx eslint app/(root)/page.tsx components/HeroCarousel.tsx components/ProductPreview.tsx components/LandingDecor.tsx components/ThemeToggle.tsx components/Navbar.tsx app/layout.tsx; npx tsc --noEmit -p . 2>&1 | Select-String 'page.tsx|HeroCarousel|ProductPreview|LandingDecor|ThemeToggle|Navbar|layout'; Remove-Item components/landing-page-effects.css -ErrorAction SilentlyContinue; 'done'"
+		},
+		{
+			"label": "Landing lint check 2",
+			"type": "shell",
+			"command": "npx eslint 'app/(root)/page.tsx' components/HeroCarousel.tsx components/ProductPreview.tsx components/LandingDecor.tsx components/ThemeToggle.tsx components/Navbar.tsx app/layout.tsx; npx tsc --noEmit -p . 2>&1 | Select-String 'page.tsx|HeroCarousel|ProductPreview|LandingDecor|ThemeToggle|Navbar|layout'; 'done'"
+		},
+		{
+			"label": "Courses lint check",
+			"type": "shell",
+			"command": "npx eslint components/CourseLibrary.tsx components/Navbar.tsx 'app/(root)/courses/page.tsx'; npx tsc --noEmit -p . 2>&1 | Select-String 'courses/page|CourseLibrary|Navbar'; 'done'"
+		},
+		{
+			"label": "Courses fix check",
+			"type": "shell",
+			"command": "npx eslint 'app/(root)/courses/page.tsx'; npx tsc --noEmit -p . 2>&1 | Select-String 'courses/page'; 'done'"
 		}
 	]
 }
