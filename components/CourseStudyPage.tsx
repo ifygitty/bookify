@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "r
 import { useRouter } from "next/navigation";
 import { ArrowUp, BookOpenCheck, FileText, FolderOpen, LoaderCircle, Menu, RefreshCw, SlidersHorizontal, Trash2, Upload } from "lucide-react";
 import { upload } from "@vercel/blob/client";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
 import CourseQuizCenter from "@/components/CourseQuizCenter";
 import CourseFlashcardCenter from "@/components/CourseFlashcardCenter";
 import CourseOutlineCenter from "@/components/CourseOutlineCenter";
@@ -34,6 +35,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 export default function CourseStudyPage({ course }: { course: Course }) {
     const router = useRouter();
+    const { confirmDialog } = useDialogs();
     const initialMaterialIds = course.materials[0]?.id ? [course.materials[0].id] : [];
     const [selectedMaterialIds, setSelectedMaterialIds] = useState(initialMaterialIds);
     const [chatMaterialIds, setChatMaterialIds] = useState(initialMaterialIds);
@@ -219,13 +221,14 @@ export default function CourseStudyPage({ course }: { course: Course }) {
     };
 
     const deleteMaterial = async (material: CourseMaterial) => {
-        if (
-            isSending ||
-            isUploading ||
-            deletingMaterialId ||
-            reanalyzingMaterialId ||
-            !window.confirm(`Delete "${material.title}" and its related chat history? This cannot be undone.`)
-        ) return;
+        if (isSending || isUploading || deletingMaterialId || reanalyzingMaterialId) return;
+        const confirmed = await confirmDialog({
+            title: "Delete this material?",
+            description: `Are you sure you want to delete "${material.title}" and its related chat history? This action cannot be undone.`,
+            confirmText: "Delete material",
+            variant: "danger",
+        });
+        if (!confirmed) return;
 
         setMaterialActionError("");
         setDeletingMaterialId(material.id);

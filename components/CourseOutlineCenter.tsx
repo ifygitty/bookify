@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
 import {
     ArrowDown,
     ArrowUp,
@@ -100,6 +101,7 @@ function freshTopic(): Topic {
 }
 
 export default function CourseOutlineCenter({ courseId, courseName, materials }: Props) {
+    const { confirmDialog } = useDialogs();
     const [outline, setOutline] = useState<Outline | null>(null);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [draftResponse, setDraftResponse] = useState<DraftResponse | null>(null);
@@ -151,7 +153,13 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
 
     const startOutlineFlow = async () => {
         if (isDirty) {
-            if (!window.confirm("You have unsaved outline edits. Reload the saved outline and discard those edits?")) return;
+            const confirmed = await confirmDialog({
+                title: "Discard unsaved edits?",
+                description: "You have unsaved outline edits. Reload the saved outline and discard those edits?",
+                confirmText: "Discard edits",
+                variant: "warning",
+            });
+            if (!confirmed) return;
             try {
                 await loadOutline();
             } catch (loadError) {
@@ -230,12 +238,16 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
             setError("Confirm that you want to continue with the selected materials that were retrieved.");
             return;
         }
-        if (
-            draftResponse.replaceExisting &&
-            !window.confirm(
-                "Save this replacement outline? Topics that do not match an existing topic name will be replaced, along with their edits and study statuses. Statuses for exact-name matches will be kept.",
-            )
-        ) return;
+        if (draftResponse.replaceExisting) {
+            const confirmed = await confirmDialog({
+                title: "Save this replacement outline?",
+                description:
+                    "Topics that do not match an existing topic name will be replaced, along with their edits and study statuses. Statuses for exact-name matches will be kept.",
+                confirmText: "Save outline",
+                variant: "warning",
+            });
+            if (!confirmed) return;
+        }
 
         setError("");
         setIsSaving(true);
@@ -375,17 +387,30 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
     };
 
     // Subtopics live inside their topic, so removing a topic removes them too.
-    const deleteTopic = (topic: Topic) => {
-        if (!outline || !window.confirm(`Delete "${topic.name || "this topic"}" and its ${topic.subtopics.length} subtopic(s)? This cannot be undone.`)) return;
+    const deleteTopic = async (topic: Topic) => {
+        if (!outline) return;
+        const confirmed = await confirmDialog({
+            title: "Delete this topic?",
+            description: `Are you sure you want to delete "${topic.name || "this topic"}" and its ${topic.subtopics.length} subtopic(s)? This action cannot be undone.`,
+            confirmText: "Delete topic",
+            variant: "danger",
+        });
+        if (!confirmed) return;
         void persistTopics(
             outline.topics.filter((item) => item.id !== topic.id).map((item, order) => ({ ...item, order })),
             `Deleted "${topic.name || "topic"}" and its subtopics.`,
         );
     };
 
-    const deleteAllTopics = () => {
+    const deleteAllTopics = async () => {
         if (!outline || outline.topics.length === 0) return;
-        if (!window.confirm(`Delete all ${outline.topics.length} topics and every subtopic under them? This cannot be undone.`)) return;
+        const confirmed = await confirmDialog({
+            title: "Delete the whole outline?",
+            description: `All ${outline.topics.length} topics and every subtopic under them will be deleted. This action cannot be undone.`,
+            confirmText: "Delete all topics",
+            variant: "danger",
+        });
+        if (!confirmed) return;
         void persistTopics([], "All topics and subtopics were deleted.");
     };
 
@@ -404,8 +429,14 @@ export default function CourseOutlineCenter({ courseId, courseName, materials }:
         ],
     }));
 
-    const deleteSubtopic = (topicId: string, subtopic: Subtopic) => {
-        if (!window.confirm(`Delete "${subtopic.name || "this subtopic"}"?`)) return;
+    const deleteSubtopic = async (topicId: string, subtopic: Subtopic) => {
+        const confirmed = await confirmDialog({
+            title: "Delete this subtopic?",
+            description: `Are you sure you want to delete "${subtopic.name || "this subtopic"}"?`,
+            confirmText: "Delete subtopic",
+            variant: "danger",
+        });
+        if (!confirmed) return;
         changeTopic(topicId, (topic) => ({
             ...topic,
             subtopics: topic.subtopics

@@ -1,0 +1,67 @@
+﻿
+
+Path       : C:\Users\USER\testing bookified\components\CourseFlashcardCenter.tsx
+LineNumber : 187
+Line       :         if (!activeDeck || !window.confirm(`Delete "${activeDeck.name}" and all of 
+             its flashcards and review history?`)) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseFlashcardCenter.tsx
+LineNumber : 304
+Line       :         if (!activeDeck || !window.confirm("Delete this flashcard and its review 
+             history?")) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseLibrary.tsx
+LineNumber : 82
+Line       :         if (busyCourseId || !window.confirm(`Delete "${courseName}" and all of its 
+             study materials and chat history? This cannot be undone.`)) {
+
+Path       : C:\Users\USER\testing bookified\components\CourseOutlineCenter.tsx
+LineNumber : 154
+Line       :             if (!window.confirm("You have unsaved outline edits. Reload the saved 
+             outline and discard those edits?")) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseOutlineCenter.tsx
+LineNumber : 235
+Line       :             !window.confirm(
+
+Path       : C:\Users\USER\testing bookified\components\CourseOutlineCenter.tsx
+LineNumber : 379
+Line       :         if (!outline || !window.confirm(`Delete "${topic.name || "this topic"}" 
+             and its ${topic.subtopics.length} subtopic(s)? This cannot be undone.`)) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseOutlineCenter.tsx
+LineNumber : 388
+Line       :         if (!window.confirm(`Delete all ${outline.topics.length} topics and every 
+             subtopic under them? This cannot be undone.`)) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseOutlineCenter.tsx
+LineNumber : 408
+Line       :         if (!window.confirm(`Delete "${subtopic.name || "this subtopic"}"?`)) 
+             return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseQuizCenter.tsx
+LineNumber : 183
+Line       :         const name = window.prompt("Name the flashcard deck for this course:");
+
+Path       : C:\Users\USER\testing bookified\components\CourseQuizCenter.tsx
+LineNumber : 389
+Line       :         if (!window.confirm("Submit this quiz now? You cannot change your answers 
+             after submission.")) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseRevisionPlanner.tsx
+LineNumber : 399
+Line       :         if (!plan || !window.confirm(`Delete "${plan.title || "this revision 
+             plan"}"? This cannot be undone.`)) return;
+
+Path       : C:\Users\USER\testing bookified\components\CourseStudyPage.tsx
+LineNumber : 227
+Line       :             !window.confirm(`Delete "${material.title}" and its related chat 
+             history? This cannot be undone.`)
+
+Path       : C:\Users\USER\testing bookified\components\DeleteBookButton.tsx
+LineNumber : 27
+Line       :         if (!window.confirm(`Delete "${title}" from your collection? This cannot 
+             be undone.`)) {
+
+
+

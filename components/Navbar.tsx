@@ -8,6 +8,7 @@ import { SignedIn, SignedOut, UserButton, useClerk, useUser } from "@clerk/nextj
 import { LogOut, Menu, X } from "lucide-react";
 import {cn} from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
+import "@/components/landing.css";
 import "@/components/mentor-ui.css";
 
 const publicNavItems = [
@@ -42,7 +43,7 @@ const Navbar = () => {
     };
 
     return (
-        <header className="mentor-nav fixed z-50 w-full">
+        <header className="mentor-nav border-light fixed z-50 w-full">
             <div className="wrapper navbar-height py-4 flex justify-between items-center">
                 <Link
                     href="/"

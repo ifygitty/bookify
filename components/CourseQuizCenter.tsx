@@ -2,19 +2,39 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { BookOpenCheck, CalendarPlus, Check, ChevronLeft, ChevronRight, LoaderCircle, RotateCcw, X } from "lucide-react";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
+import {
+    MAX_TABLE_CELL_LENGTH,
+    MAX_TEXT_ANSWER_LENGTH,
+    isStructuredAnswerBlank,
+    parseStructuredAnswer,
+} from "@/lib/course-quiz";
 
 type Material = { id: string; title: string; fileSize: number };
 type FlashcardDeckOption = { id: string; name: string };
+type QuizPart = {
+    label: string;
+    prompt: string;
+    marks: number;
+    format: "text" | "table";
+    tableColumns: string[];
+    tableRows: number;
+};
 type QuizQuestion = {
     id: string;
     prompt: string;
-    type: "multiple_choice" | "true_false" | "short_answer" | "calculation";
+    type: "multiple_choice" | "true_false" | "short_answer" | "calculation" | "structured";
     difficulty: "easy" | "medium" | "hard";
+    scenario?: string;
+    marks?: number;
+    parts?: QuizPart[];
+    diagramSvg?: string;
     choices: string[];
     topic: string;
     sourceMaterialIds: string[];
     expectedAnswer?: string;
     explanation?: string;
+    rubricItems?: { criterion: string; marks: number }[];
     correctChoiceIndex?: number;
     correctBoolean?: boolean;
 };
@@ -23,7 +43,12 @@ type QuizAnswer = {
     value: string;
     correctness?: "correct" | "partially_correct" | "incorrect" | "uncertain";
     scoreFraction?: number;
+    marksAwarded?: number;
+    marksAvailable?: number;
+    criteria?: { criterion: string; awarded: number; max: number; comment: string }[];
     feedback?: string;
+    correctApproach?: string;
+    incorrectPoints?: string[];
     missingPoints?: string[];
 };
 type Quiz = {
@@ -68,6 +93,7 @@ export default function CourseQuizCenter({
     onClose,
     onAddToRevisionPlan,
 }: Props) {
+    const { confirmDialog, promptDialog } = useDialogs();
     const [materialIds, setMaterialIds] = useState(initialMaterialIds);
     const [questionCountChoice, setQuestionCountChoice] = useState("5");
     const [customQuestionCount, setCustomQuestionCount] = useState("5");
@@ -76,7 +102,6 @@ export default function CourseQuizCenter({
         : Number(questionCountChoice);
     const [difficulty, setDifficulty] = useState("medium");
     const [questionType, setQuestionType] = useState("multiple_choice");
-    const [coverage, setCoverage] = useState("all");
     const [topic, setTopic] = useState("");
     const [referenceType, setReferenceType] = useState<"none" | "pasted" | "material" | "upload">("none");
     const [referenceMaterialId, setReferenceMaterialId] = useState("");
@@ -99,7 +124,8 @@ export default function CourseQuizCenter({
     const [flashcardQuestionId, setFlashcardQuestionId] = useState("");
     const [flashcardNotice, setFlashcardNotice] = useState("");
     const [view, setView] = useState<"create" | "history">("create");
-    const saveTimerRef = useRef<number | null>(null);
+    const savingRef = useRef(false);
+    const answerVersionRef = useRef(0);
 
     const selectedMaterials = useMemo(
         () => materials.filter((material) => materialIds.includes(material.id)),
@@ -109,7 +135,11 @@ export default function CourseQuizCenter({
     const currentAnswer = activeQuiz?.answers.find((answer) => answer.questionId === currentQuestion?.id);
     const canAnswer = activeQuiz?.status === "generated" || activeQuiz?.status === "in_progress";
     const isWrittenQuiz =
-        activeQuiz?.questions.some((question) => question.type === "short_answer" || question.type === "calculation") ?? false;
+        activeQuiz?.questions.some((question) => question.type === "short_answer" || question.type === "calculation" || question.type === "structured") ?? false;
+    const isQuestionAnswered = (question: QuizQuestion) => {
+        const value = answers[question.id] ?? "";
+        return question.type === "structured" ? !isStructuredAnswerBlank(value) : Boolean(value.trim());
+    };
 
     const loadHistory = useCallback(async () => {
         setIsLoadingHistory(true);
@@ -152,7 +182,14 @@ export default function CourseQuizCenter({
     }, [activeQuiz?.status, courseId]);
 
     const createQuizFlashcardDeck = async () => {
-        const name = window.prompt("Name the flashcard deck for this course:");
+        const name = await promptDialog({
+            title: "Create a flashcard deck",
+            description: "Give the new deck a name for this course.",
+            label: "Deck name",
+            placeholder: "e.g. Key formulas",
+            confirmText: "Create deck",
+            maxLength: 100,
+        });
         if (!name?.trim()) return;
         setFlashcardNotice("");
         try {
@@ -194,11 +231,10 @@ export default function CourseQuizCenter({
         }
     };
 
-    const saveAnswers = useCallback(async (quiz: Quiz, values: Record<string, string>) => {
-        if (saveTimerRef.current !== null) {
-            window.clearTimeout(saveTimerRef.current);
-            saveTimerRef.current = null;
-        }
+    const saveAnswers = useCallback(async (quiz: Quiz, values: Record<string, string>): Promise<boolean> => {
+        if (savingRef.current) return false;
+        savingRef.current = true;
+        const version = answerVersionRef.current;
         setIsSaving(true);
         try {
             const response = await fetch(`/api/courses/${courseId}/quizzes/${quiz.id}`, {
@@ -213,33 +249,30 @@ export default function CourseQuizCenter({
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || "Could not save your answers.");
-            setIsDirty(false);
-            setNotice("Answers saved.");
+            if (answerVersionRef.current === version) setIsDirty(false);
             return true;
         } catch (saveError) {
             console.error("Failed to save quiz answers:", saveError);
-            setError(errorMessage(saveError, "Could not save your answers."));
+            setError(errorMessage(saveError, "Could not save your answers. Your answer is still here; please try again."));
             return false;
         } finally {
+            savingRef.current = false;
             setIsSaving(false);
         }
     }, [courseId]);
 
-    useEffect(() => {
-        if (!isDirty || !activeQuiz || activeQuiz.status === "completed" || activeQuiz.status === "grading") {
-            return;
-        }
-        saveTimerRef.current = window.setTimeout(() => {
-            saveTimerRef.current = null;
-            void saveAnswers(activeQuiz, answers);
-        }, 500);
-        return () => {
-            if (saveTimerRef.current !== null) {
-                window.clearTimeout(saveTimerRef.current);
-                saveTimerRef.current = null;
-            }
-        };
-    }, [activeQuiz, answers, isDirty, saveAnswers]);
+    // Saves only when the student has unsaved changes; resolves false when the save failed.
+    const saveIfDirty = async () => {
+        if (!activeQuiz || !canAnswer || !isDirty) return true;
+        return saveAnswers(activeQuiz, answers);
+    };
+
+    const goToQuestion = async (target: number) => {
+        if (isSaving || isSubmitting) return;
+        if (!(await saveIfDirty())) return;
+        setNotice("");
+        setQuestionIndex(target);
+    };
 
     const selectQuiz = async (quizId: string) => {
         setError("");
@@ -273,9 +306,9 @@ export default function CourseQuizCenter({
             !Number.isInteger(questionCount) ||
             questionCount < 1 ||
             questionCount > 20 ||
-            (coverage === "topic" && !topic.trim())
+            (topic.trim().length > 200)
         ) {
-            setError("Choose a valid question count and enter a topic when using topic coverage.");
+            setError("Choose a valid question count (1-20) and keep the topic under 200 characters.");
             return;
         }
         if (referenceType === "pasted" && (!referenceText.trim() || referenceText.length > MAX_REFERENCE_LENGTH)) {
@@ -300,7 +333,7 @@ export default function CourseQuizCenter({
                 questionCount: String(questionCount),
                 difficulty,
                 questionType,
-                coverage,
+                coverage: topic.trim() ? "topic" : "all",
                 topic: topic.trim(),
                 referenceType,
                 referenceMaterialId,
@@ -346,16 +379,29 @@ export default function CourseQuizCenter({
     };
 
     const updateAnswer = (value: string) => {
-        if (!currentQuestion || isSaving || isSubmitting) return;
+        if (!currentQuestion || isSubmitting || !canAnswer) return;
+        answerVersionRef.current += 1;
         setAnswers((previous) => ({ ...previous, [currentQuestion.id]: value }));
         setIsDirty(true);
         setNotice("");
         setError("");
     };
 
+    const updateStructuredPart = (label: string, entry: string | string[][]) => {
+        if (!currentQuestion) return;
+        const current = parseStructuredAnswer(answers[currentQuestion.id] ?? "");
+        updateAnswer(JSON.stringify({ ...current, [label]: entry }));
+    };
+
     const submitQuiz = async () => {
         if (!activeQuiz || isSubmitting || activeQuiz.status === "completed") return;
-        if (!window.confirm("Submit this quiz now? You cannot change your answers after submission.")) return;
+        const confirmed = await confirmDialog({
+            title: "Submit this quiz?",
+            description: "You cannot change your answers after submission.",
+            confirmText: "Submit quiz",
+            variant: "info",
+        });
+        if (!confirmed) return;
 
         setError("");
         setNotice("");
@@ -514,13 +560,14 @@ export default function CourseQuizCenter({
 
                     <div className="mb-4 flex flex-wrap gap-1.5" aria-label="Question progress">
                         {activeQuiz.questions.map((question, index) => {
-                            const answered = Boolean(answers[question.id]?.trim());
+                            const answered = isQuestionAnswered(question);
                             const feedback = activeQuiz.answers.find((answer) => answer.questionId === question.id);
                             return (
                                 <button
                                     key={question.id}
                                     type="button"
-                                    onClick={() => setQuestionIndex(index)}
+                                    onClick={() => { void goToQuestion(index); }}
+                                    disabled={isSaving || isSubmitting}
                                     aria-label={`Go to question ${index + 1}${answered ? ", answered" : ", unanswered"}`}
                                     className={`grid size-9 place-items-center rounded-lg border text-sm font-semibold ${
                                         feedback?.correctness === "correct"
@@ -545,8 +592,27 @@ export default function CourseQuizCenter({
                             <div className="mb-3 flex flex-wrap gap-2 text-xs">
                                 <span className="rounded-full bg-[#f8f4e9] px-3 py-1 font-semibold capitalize">{currentQuestion.difficulty}</span>
                                 {currentQuestion.topic && <span className="rounded-full bg-[#f8f4e9] px-3 py-1">{currentQuestion.topic}</span>}
+                                {(currentQuestion.marks ?? 1) > 1 && (
+                                    <span className="rounded-full bg-[#f3e4c7] px-3 py-1 font-semibold">{currentQuestion.marks} marks</span>
+                                )}
                             </div>
-                            <h4 className="text-base font-semibold leading-7">{currentQuestion.prompt}</h4>
+                            {currentQuestion.scenario?.trim() && (
+                                <div className="mb-3 max-h-80 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-[#212a3b]/10 bg-[#f8f4e9] p-4 text-sm leading-6">
+                                    {currentQuestion.scenario}
+                                </div>
+                            )}
+                            {currentQuestion.diagramSvg?.trim() && (
+                                <figure className="mb-3">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={`data:image/svg+xml;utf8,${encodeURIComponent(currentQuestion.diagramSvg)}`}
+                                        alt="Schematic illustration for this question"
+                                        className="mx-auto max-h-72 w-full max-w-md rounded-xl border border-[#212a3b]/10 bg-white"
+                                    />
+                                    <figcaption className="mt-1 text-center text-xs text-[#3d485e]">Schematic illustration</figcaption>
+                                </figure>
+                            )}
+                            <h4 className="whitespace-pre-wrap text-base font-semibold leading-7">{currentQuestion.prompt}</h4>
                             {currentQuestion.sourceMaterialIds.length > 0 && (
                                 <p className="mt-2 text-xs text-[#3d485e]">
                                     Based on: {currentQuestion.sourceMaterialIds
@@ -557,7 +623,7 @@ export default function CourseQuizCenter({
                             )}
 
                             {currentQuestion.type === "multiple_choice" ? (
-                                <fieldset className="mt-5 space-y-2" disabled={!canAnswer || isSaving || isSubmitting}>
+                                <fieldset className="mt-5 space-y-2" disabled={!canAnswer || isSubmitting}>
                                     <legend className="sr-only">Choose an answer</legend>
                                     {currentQuestion.choices.map((choice, index) => (
                                         <label key={`${index}-${choice}`} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm ${answers[currentQuestion.id] === String(index) ? "border-[#663820] bg-[#fff6e5]" : "border-[#212a3b]/10 hover:bg-[#f8f4e9]"}`}>
@@ -582,12 +648,77 @@ export default function CourseQuizCenter({
                                                 value={choice}
                                                 checked={answers[currentQuestion.id] === choice}
                                                 onChange={() => updateAnswer(choice)}
-                                                disabled={!canAnswer || isSaving || isSubmitting}
+                                                disabled={!canAnswer || isSubmitting}
                                                 className="accent-[#663820]"
                                             />
                                             {choice}
                                         </label>
                                     ))}
+                                </div>
+                            ) : currentQuestion.type === "structured" ? (
+                                <div className="mt-5 space-y-5">
+                                    {(currentQuestion.parts ?? []).map((part) => {
+                                        const stored = parseStructuredAnswer(answers[currentQuestion.id] ?? "")[part.label];
+                                        return (
+                                            <div key={part.label} className="rounded-xl border border-[#212a3b]/10 p-3">
+                                                <p className="mb-2 text-sm font-semibold">
+                                                    ({part.label}) <span className="font-normal whitespace-pre-wrap">{part.prompt}</span>
+                                                    <span className="ml-2 text-xs font-semibold text-[#663820]">[{part.marks} mark{part.marks === 1 ? "" : "s"}]</span>
+                                                </p>
+                                                {part.format === "table" ? (
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full min-w-[480px] border-collapse text-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    {part.tableColumns.map((column, columnIndex) => (
+                                                                        <th key={columnIndex} className="border border-[#212a3b]/15 bg-[#f8f4e9] px-2 py-1.5 text-left font-semibold">{column}</th>
+                                                                    ))}
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {Array.from({ length: part.tableRows }, (_, rowIndex) => (
+                                                                    <tr key={rowIndex}>
+                                                                        {part.tableColumns.map((column, columnIndex) => {
+                                                                            const grid = Array.isArray(stored) ? stored : [];
+                                                                            return (
+                                                                                <td key={columnIndex} className="border border-[#212a3b]/15 p-0">
+                                                                                    <input
+                                                                                        value={grid[rowIndex]?.[columnIndex] ?? ""}
+                                                                                        onChange={(event) => {
+                                                                                            const next = Array.from({ length: part.tableRows }, (_, r) =>
+                                                                                                Array.from({ length: part.tableColumns.length }, (_, c) => grid[r]?.[c] ?? ""),
+                                                                                            );
+                                                                                            next[rowIndex][columnIndex] = event.target.value;
+                                                                                            updateStructuredPart(part.label, next);
+                                                                                        }}
+                                                                                        maxLength={MAX_TABLE_CELL_LENGTH}
+                                                                                        disabled={!canAnswer || isSubmitting}
+                                                                                        aria-label={`Part ${part.label}, row ${rowIndex + 1}, ${column}`}
+                                                                                        className="w-full bg-transparent px-2 py-2 text-sm outline-none focus:bg-[#fff6e5]"
+                                                                                    />
+                                                                                </td>
+                                                                            );
+                                                                        })}
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                ) : (
+                                                    <textarea
+                                                        value={typeof stored === "string" ? stored : ""}
+                                                        onChange={(event) => updateStructuredPart(part.label, event.target.value)}
+                                                        maxLength={MAX_TEXT_ANSWER_LENGTH}
+                                                        rows={4}
+                                                        disabled={!canAnswer || isSubmitting}
+                                                        aria-label={`Answer for part ${part.label}`}
+                                                        placeholder="Show your workings and answer..."
+                                                        className="w-full rounded-xl border border-[#212a3b]/15 p-3 text-sm outline-none focus:border-[#663820]"
+                                                    />
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             ) : (
                                 <label className="mt-5 block">
@@ -595,9 +726,9 @@ export default function CourseQuizCenter({
                                     <textarea
                                         value={answers[currentQuestion.id] ?? ""}
                                         onChange={(event) => updateAnswer(event.target.value)}
-                                        maxLength={2_000}
+                                        maxLength={MAX_TEXT_ANSWER_LENGTH}
                                         rows={5}
-                                        disabled={!canAnswer || isSaving || isSubmitting}
+                                        disabled={!canAnswer || isSubmitting}
                                         placeholder="Show your answer and workings where relevant..."
                                         className="w-full rounded-xl border border-[#212a3b]/15 p-3 text-sm outline-none focus:border-[#663820]"
                                     />
@@ -615,11 +746,46 @@ export default function CourseQuizCenter({
                                     }`}>
                                         <p className="font-semibold capitalize">
                                             {currentAnswer?.correctness?.replaceAll("_", " ") ?? "Result"}
+                                            {currentAnswer?.marksAvailable !== undefined && currentAnswer.marksAwarded !== undefined && (
+                                                <span className="ml-2 normal-case">· {currentAnswer.marksAwarded} / {currentAnswer.marksAvailable} marks</span>
+                                            )}
                                         </p>
                                         <p className="mt-1 whitespace-pre-wrap">
                                             {currentAnswer?.feedback}
                                         </p>
+                                        {currentAnswer?.correctness === "uncertain" && (
+                                            <p className="mt-1 text-xs">Mentor was not fully confident marking this answer. Compare it with the model answer below.</p>
+                                        )}
                                     </div>
+                                    {currentAnswer?.criteria && currentAnswer.criteria.length > 0 && (
+                                        <div className="overflow-x-auto">
+                                            <p className="mb-1 text-sm font-semibold">Marking breakdown</p>
+                                            <table className="w-full min-w-[320px] border-collapse text-sm">
+                                                <tbody>
+                                                    {currentAnswer.criteria.map((item, itemIndex) => (
+                                                        <tr key={itemIndex} className="border-b border-[#212a3b]/10 align-top">
+                                                            <td className="py-1.5 pr-3">
+                                                                {item.criterion}
+                                                                {item.comment && <span className="block text-xs text-[#3d485e]">{item.comment}</span>}
+                                                            </td>
+                                                            <td className="whitespace-nowrap py-1.5 text-right font-semibold">{item.awarded} / {item.max}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+                                    {currentAnswer?.correctApproach && (
+                                        <div>
+                                            <p className="text-sm font-semibold">Correct approach</p>
+                                            <p className="mt-1 whitespace-pre-wrap text-sm leading-6">{currentAnswer.correctApproach}</p>
+                                        </div>
+                                    )}
+                                    {currentAnswer?.incorrectPoints?.length ? (
+                                        <p className="text-sm text-[#3d485e]">
+                                            Mistakes: {currentAnswer.incorrectPoints.join("; ")}
+                                        </p>
+                                    ) : null}
                                     {currentQuestion.expectedAnswer && (
                                         <div>
                                             <p className="text-sm font-semibold">Expected answer</p>
@@ -696,25 +862,25 @@ export default function CourseQuizCenter({
                         <p className="text-xs text-[#3d485e]">
                             {activeQuiz.status === "completed"
                                 ? "Submitted answers and feedback are saved."
-                                : isSaving ? "Saving answers..." : isDirty ? "Unsaved changes" : "Answers save automatically"}
+                                : isSaving ? "Saving answers..." : isDirty ? "Unsaved changes · saved when you move on or submit" : "All changes saved"}
                         </p>
                         <div className="flex flex-wrap gap-2">
                             <button
                                 type="button"
-                                onClick={() => setQuestionIndex((index) => Math.max(0, index - 1))}
+                                onClick={() => { void goToQuestion(Math.max(0, questionIndex - 1)); }}
                                 disabled={questionIndex === 0 || isSaving || isSubmitting}
                                 className="inline-flex items-center gap-1 rounded-lg border border-[#212a3b]/15 px-3 py-2 text-sm font-semibold disabled:opacity-50"
                             >
-                                <ChevronLeft className="size-4" />Previous
+                                {isSaving ? <LoaderCircle className="size-4 animate-spin" /> : <ChevronLeft className="size-4" />}Previous
                             </button>
                             {questionIndex < activeQuiz.questions.length - 1 ? (
                                 <button
                                     type="button"
-                                    onClick={() => setQuestionIndex((index) => Math.min(activeQuiz.questions.length - 1, index + 1))}
+                                    onClick={() => { void goToQuestion(Math.min(activeQuiz.questions.length - 1, questionIndex + 1)); }}
                                     disabled={isSaving || isSubmitting}
                                     className="inline-flex items-center gap-1 rounded-lg border border-[#212a3b]/15 px-3 py-2 text-sm font-semibold disabled:opacity-50"
                                 >
-                                    Next<ChevronRight className="size-4" />
+                                    Next{isSaving ? <LoaderCircle className="size-4 animate-spin" /> : <ChevronRight className="size-4" />}
                                 </button>
                             ) : activeQuiz.status !== "completed" ? (
                                 <button
@@ -879,22 +1045,15 @@ export default function CourseQuizCenter({
                                     <option value="multiple_choice">Multiple choice</option>
                                     <option value="true_false">True/false</option>
                                     <option value="short_answer">Short answer</option>
-                                    <option value="calculation">Calculation or structured response</option>
+                                    <option value="calculation">Calculation (workings and final answer)</option>
+                                    <option value="structured">Structured exam question (multi-part, tables, workings)</option>
                                 </select>
                             </label>
-                            <label className="text-sm">
-                                <span className="mb-1 block font-medium">Coverage</span>
-                                <select value={coverage} onChange={(event) => setCoverage(event.target.value)} className="w-full rounded-xl border border-[#212a3b]/15 bg-white p-3">
-                                    <option value="all">All selected materials</option>
-                                    <option value="topic">Specific topic</option>
-                                </select>
+                            <label className="text-sm sm:col-span-2">
+                                <span className="mb-1 block font-medium">Topic or chapter (optional)</span>
+                                <input value={topic} onChange={(event) => setTopic(event.target.value)} maxLength={200} placeholder="e.g. Depreciation, Partnership Accounts, Chapter 4..." className="w-full rounded-xl border border-[#212a3b]/15 bg-white p-3" />
+                                <span className="mt-1 block text-xs text-[#3d485e]">Focus your practice on a specific topic within your selected materials.</span>
                             </label>
-                            {coverage === "topic" && (
-                                <label className="text-sm sm:col-span-2">
-                                    <span className="mb-1 block font-medium">Topic</span>
-                                    <input value={topic} onChange={(event) => setTopic(event.target.value)} maxLength={200} required placeholder="e.g. depreciation" className="w-full rounded-xl border border-[#212a3b]/15 bg-white p-3" />
-                                </label>
-                            )}
                         </div>
                     </fieldset>
 

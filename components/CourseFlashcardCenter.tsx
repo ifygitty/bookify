@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { ArrowLeft, BookOpen, Check, LoaderCircle, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { toggleMaterialSelection } from "@/lib/material-selection";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
 
 type Material = { id: string; title: string };
 type Deck = { id: string; name: string; cardCount: number; dueCount: number; reviewedCount: number };
@@ -50,6 +51,7 @@ export default function CourseFlashcardCenter({
     initialMaterialIds,
     onClose,
 }: Props) {
+    const { confirmDialog } = useDialogs();
     const [decks, setDecks] = useState<Deck[]>([]);
     const [activeDeck, setActiveDeck] = useState<Deck | null>(null);
     const [cards, setCards] = useState<Card[]>([]);
@@ -184,7 +186,14 @@ export default function CourseFlashcardCenter({
     };
 
     const deleteDeck = async () => {
-        if (!activeDeck || !window.confirm(`Delete "${activeDeck.name}" and all of its flashcards and review history?`)) return;
+        if (!activeDeck) return;
+        const confirmed = await confirmDialog({
+            title: "Delete this deck?",
+            description: `Are you sure you want to delete "${activeDeck.name}" and all of its flashcards and review history? This action cannot be undone.`,
+            confirmText: "Delete deck",
+            variant: "danger",
+        });
+        if (!confirmed) return;
         setIsWorking(true);
         setError("");
         try {
@@ -301,7 +310,14 @@ export default function CourseFlashcardCenter({
     };
 
     const deleteCard = async (card: Card) => {
-        if (!activeDeck || !window.confirm("Delete this flashcard and its review history?")) return;
+        if (!activeDeck) return;
+        const confirmed = await confirmDialog({
+            title: "Delete this flashcard?",
+            description: "This flashcard and its review history will be permanently deleted. This action cannot be undone.",
+            confirmText: "Delete flashcard",
+            variant: "danger",
+        });
+        if (!confirmed) return;
         setIsWorking(true);
         setError("");
         try {

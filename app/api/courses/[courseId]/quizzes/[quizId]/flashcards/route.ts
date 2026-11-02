@@ -13,6 +13,9 @@ import {
     normalizeFlashcardFront,
 } from "@/lib/flashcards";
 import { isDuplicateKeyError } from "@/lib/flashcard-api";
+import { answerToText } from "@/lib/course-quiz";
+
+type QuizAnswerPart = NonNullable<Parameters<typeof answerToText>[0]["parts"]>[number];
 
 type RouteContext = { params: Promise<{ courseId: string; quizId: string }> };
 
@@ -54,7 +57,9 @@ export async function POST(request: Request, { params }: RouteContext) {
         const submittedAnswer = answer?.value.trim()
             ? question.type === "multiple_choice" && /^\d+$/.test(answer.value)
                 ? question.choices[Number(answer.value)] ?? answer.value
-                : answer.value
+                : question.type === "structured"
+                  ? answerToText(question as { type: string; parts?: QuizAnswerPart[] }, answer.value)
+                  : answer.value
             : "No answer submitted";
         const content = buildQuizMistakeFlashcard(question, submittedAnswer, answer?.missingPoints ?? []);
         const sourceMaterials = quiz.materialSources

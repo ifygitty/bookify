@@ -1,0 +1,17 @@
+﻿
+> components\CourseRevisionPlanner.tsx:150:export default function CourseRevisionPlanner({
+  components\CourseRevisionPlanner.tsx:151:    courseId,
+  components\CourseRevisionPlanner.tsx:152:    onOpenQuiz,
+  components\CourseRevisionPlanner.tsx:153:    onOpenFlashcards,
+  components\CourseRevisionPlanner.tsx:154:    addTopicRequest,
+> components\CourseStudyPage.tsx:35:export default function CourseStudyPage({ course }: { 
+course: Course }) {
+  components\CourseStudyPage.tsx:36:    const router = useRouter();
+  components\CourseStudyPage.tsx:37:    const initialMaterialIds = course.materials[0]?.id ? 
+[course.materials[0].id] : [];
+  components\CourseStudyPage.tsx:38:    const [selectedMaterialIds, setSelectedMaterialIds] = 
+useState(initialMaterialIds);
+  components\CourseStudyPage.tsx:39:    const [chatMaterialIds, setChatMaterialIds] = 
+useState(initialMaterialIds);
+
+

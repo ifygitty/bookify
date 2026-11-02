@@ -1,0 +1,49 @@
+﻿
+
+Path       : C:\Users\USER\testing bookified\app\(root)\page.tsx
+LineNumber : 66
+
+Path       : C:\Users\USER\testing bookified\app\(root)\page.tsx
+LineNumber : 105
+
+Path       : C:\Users\USER\testing bookified\app\(root)\page.tsx
+LineNumber : 142
+
+Path       : C:\Users\USER\testing bookified\components\CourseLibrary.tsx
+LineNumber : 103
+
+Path       : C:\Users\USER\testing bookified\components\CourseLibrary.tsx
+LineNumber : 142
+
+Path       : C:\Users\USER\testing bookified\components\HeroCarousel.tsx
+LineNumber : 69
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 95
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 99
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 122
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 125
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 137
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 219
+
+Path       : C:\Users\USER\testing bookified\components\landing.css
+LineNumber : 224
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 143
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 148
+
+
+

@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { deleteBook } from "@/lib/actions/book.actions";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
 
 type DeleteBookButtonProps = {
     slug: string;
@@ -22,11 +23,15 @@ const DeleteBookButton = ({
 }: DeleteBookButtonProps) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
-
+    const { confirmDialog } = useDialogs();
     const handleDelete = async () => {
-        if (!window.confirm(`Delete "${title}" from your collection? This cannot be undone.`)) {
-            return;
-        }
+        const confirmed = await confirmDialog({
+            title: "Delete this book?",
+            description: `Are you sure you want to delete "${title}" from your collection? This action cannot be undone.`,
+            confirmText: "Delete book",
+            variant: "danger",
+        });
+        if (!confirmed) return;
 
         setIsDeleting(true);
 

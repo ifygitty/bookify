@@ -1,0 +1,60 @@
+﻿
+
+Path       : C:\Users\USER\testing bookified\app\globals.css
+LineNumber : 4
+Line       : @custom-variant dark (&:is(.dark *));
+
+Path       : C:\Users\USER\testing bookified\app\globals.css
+LineNumber : 1500
+Line       : @media (prefers-reduced-motion: reduce) {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 5
+Line       : .mentor-nav {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 23
+Line       : :root:not(.light) .mentor-nav {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 31
+Line       : .mentor-nav .nav-link-base {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 35
+Line       : .mentor-nav .nav-link-base:hover {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 39
+Line       : .mentor-nav-logo {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 142
+Line       : /* The travelling light shows only when a card is hovered or focused */
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 143
+Line       : .course-card.border-light::before {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 148
+Line       : .course-card.border-light:hover::before,
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 149
+Line       : .course-card.border-light:focus-within::before {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 182
+Line       : @media (prefers-reduced-motion: reduce) {
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 185
+Line       :   .course-card.border-light::before,
+
+Path       : C:\Users\USER\testing bookified\components\mentor-ui.css
+LineNumber : 196
+Line       :   .course-card.border-light::before {
+
+
+

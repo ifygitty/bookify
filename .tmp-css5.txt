@@ -1,0 +1,28 @@
+﻿
+
+Path       : C:\Users\USER\testing bookified\app\(root)\courses\page.tsx
+LineNumber : 5
+Line       : import "@/components/landing.css";
+
+Path       : C:\Users\USER\testing bookified\app\(root)\courses\page.tsx
+LineNumber : 6
+Line       : import "@/components/mentor-ui.css";
+
+Path       : C:\Users\USER\testing bookified\app\(root)\page.tsx
+LineNumber : 5
+Line       : import "@/components/landing.css";
+
+Path       : C:\Users\USER\testing bookified\app\globals.css
+LineNumber : 68
+Line       :   --glass-bg: rgba(16, 39, 30, 0.55);
+
+Path       : C:\Users\USER\testing bookified\app\globals.css
+LineNumber : 210
+Line       :   --glass-bg: rgba(255, 255, 255, 0.62);
+
+Path       : C:\Users\USER\testing bookified\components\Navbar.tsx
+LineNumber : 11
+Line       : import "@/components/mentor-ui.css";
+
+
+

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
 import {
     AlertTriangle,
     CalendarDays,
@@ -158,6 +159,7 @@ export default function CourseRevisionPlanner({
     onOpenFlashcards: () => void;
     addTopicRequest?: { topic: string; nonce: number } | null;
 }) {
+    const { confirmDialog } = useDialogs();
     const [data, setData] = useState<PlannerData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
@@ -396,7 +398,14 @@ export default function CourseRevisionPlanner({
     };
 
     const deletePlan = async () => {
-        if (!plan || !window.confirm(`Delete "${plan.title || "this revision plan"}"? This cannot be undone.`)) return;
+        if (!plan) return;
+        const confirmed = await confirmDialog({
+            title: "Delete this revision plan?",
+            description: `Are you sure you want to delete "${plan.title || "this revision plan"}"? This action cannot be undone.`,
+            confirmText: "Delete plan",
+            variant: "danger",
+        });
+        if (!confirmed) return;
         setActionError("");
         const response = await fetch(`/api/courses/${courseId}/revision-plans/${plan.id}`, { method: "DELETE" });
         if (!response.ok) {

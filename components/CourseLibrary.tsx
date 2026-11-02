@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { BookOpen, FileText, Plus, LoaderCircle, Pencil, Trash2 } from "lucide-react";
+import { useDialogs } from "@/components/dialogs/DialogProvider";
 
 export type CourseListItem = {
     id: string;
@@ -14,6 +15,7 @@ export type CourseListItem = {
 
 export default function CourseLibrary({ initialCourses }: { initialCourses: CourseListItem[] }) {
     const router = useRouter();
+    const { confirmDialog } = useDialogs();
     const [name, setName] = useState("");
     const [isCreating, setIsCreating] = useState(false);
     const [error, setError] = useState("");
@@ -79,23 +81,29 @@ export default function CourseLibrary({ initialCourses }: { initialCourses: Cour
     };
 
     const deleteCourse = async (courseId: string, courseName: string) => {
-        if (busyCourseId || !window.confirm(`Delete "${courseName}" and all of its study materials and chat history? This cannot be undone.`)) {
-            return;
-        }
+        if (busyCourseId) return;
 
         setCourseActionError("");
-        setBusyCourseId(courseId);
-        try {
-            const response = await fetch(`/api/courses/${courseId}`, { method: "DELETE" });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error || "Could not delete the course.");
-            router.refresh();
-        } catch (requestError) {
-            console.error("Course deletion request failed:", requestError);
-            setCourseActionError(requestError instanceof Error ? requestError.message : "Could not delete the course.");
-        } finally {
-            setBusyCourseId(null);
-        }
+        const deleted = await confirmDialog({
+            title: "Delete this course?",
+            description: `Are you sure you want to delete ${courseName} and its associated study materials and chat history? This action cannot be undone.`,
+            confirmText: "Delete course",
+            variant: "danger",
+            onConfirm: async () => {
+                setBusyCourseId(courseId);
+                try {
+                    const response = await fetch(`/api/courses/${courseId}`, { method: "DELETE" });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || "Could not delete the course.");
+                } catch (requestError) {
+                    console.error("Course deletion request failed:", requestError);
+                    throw requestError instanceof Error ? requestError : new Error("Could not delete the course.");
+                } finally {
+                    setBusyCourseId(null);
+                }
+            },
+        });
+        if (deleted) router.refresh();
     };
 
     return (

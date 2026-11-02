@@ -621,6 +621,146 @@
 			"label": "Courses fix check",
 			"type": "shell",
 			"command": "npx eslint 'app/(root)/courses/page.tsx'; npx tsc --noEmit -p . 2>&1 | Select-String 'courses/page'; 'done'"
+		},
+		{
+			"label": "List quiz files",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -File app,components,lib,database,types -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match 'uiz' } | ForEach-Object { '{0} {1}' -f $_.Length, $_.FullName.Replace((Get-Location).Path + '\\','') }"
+		},
+		{
+			"label": "List quiz files 3",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -File app,components,lib,database,types | Where-Object { $_.FullName -match 'uiz' } | ForEach-Object { \"$($_.Length) $($_.FullName)\" }"
+		},
+		{
+			"label": "List quiz files 4",
+			"type": "shell",
+			"command": "(Get-ChildItem -Recurse -File app,components,lib,database,types | Where-Object { $_.FullName -match 'uiz' }).FullName"
+		},
+		{
+			"label": "quiz-check-1",
+			"type": "shell",
+			"command": "npx eslint lib/course-quiz.ts database/models/course-quiz.model.ts components/CourseQuizCenter.tsx 'app/api/courses/[courseId]/quizzes/route.ts' 'app/api/courses/[courseId]/quizzes/[quizId]/route.ts' 'app/api/courses/[courseId]/quizzes/[quizId]/flashcards/route.ts'; npx tsc --noEmit -p . 2>&1 | Select-String 'quiz|Quiz|flashcards.ts'; 'done'"
+		},
+		{
+			"label": "quiz-check-2",
+			"type": "shell",
+			"command": "npx eslint lib/course-quiz.ts database/models/course-quiz.model.ts components/CourseQuizCenter.tsx 'app/api/courses/[courseId]/quizzes/route.ts' 'app/api/courses/[courseId]/quizzes/[quizId]/route.ts' 'app/api/courses/[courseId]/quizzes/[quizId]/flashcards/route.ts'; npx tsc --noEmit -p . 2>&1 | Select-String 'quiz|Quiz|flashcards'; 'done'"
+		},
+		{
+			"label": "quiz-build-1",
+			"type": "shell",
+			"command": "npx next build 2>&1 | Select-Object -Last 25; 'build-done'"
+		},
+		{
+			"label": "quiz-build-2",
+			"type": "shell",
+			"command": "npx next build 2>&1 | Select-Object -Last 25; 'build-done'"
+		},
+		{
+			"label": "quiz-check-3",
+			"type": "shell",
+			"command": "npx eslint lib/course-quiz.ts 'app/api/courses/[courseId]/quizzes/route.ts'; npx tsc --noEmit -p . 2>&1 | Select-String 'course-quiz|quizzes/route'; 'done'"
+		},
+		{
+			"label": "quiz-check-4",
+			"type": "shell",
+			"command": "npx eslint 'app/api/courses/[courseId]/quizzes/route.ts'; npx tsc --noEmit -p . 2>&1 | Select-String 'quizzes/route'; 'done'"
+		},
+		{
+			"label": "quiz-check-5",
+			"type": "shell",
+			"command": "npx eslint 'app/api/courses/[courseId]/quizzes/route.ts'; npx tsc --noEmit -p . 2>&1 | Select-String 'quizzes/route'; 'done'"
+		},
+		{
+			"label": "quiz-check-6",
+			"type": "shell",
+			"command": "npx eslint lib/course-quiz.ts; npx tsc --noEmit -p . 2>&1 | Select-String 'course-quiz'; 'done'"
+		},
+		{
+			"label": "quiz-check-7",
+			"type": "shell",
+			"command": "npx eslint database/models/course-quiz.model.ts; npx tsc --noEmit -p . 2>&1 | Select-String 'course-quiz.model'; 'done'"
+		},
+		{
+			"label": "quiz-check-8",
+			"type": "shell",
+			"command": "npx eslint lib/course-quiz.ts; npx tsc --noEmit -p . 2>&1 | Select-String 'course-quiz'; 'done'"
+		},
+		{
+			"label": "quiz-check-9",
+			"type": "shell",
+			"command": "npx eslint lib/course-quiz.ts; npx tsc --noEmit -p . 2>&1 | Select-String 'course-quiz'; 'done'"
+		},
+		{
+			"label": "find-native-dialogs-1",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.tsx,*.ts -Path app,components,hooks,lib | Select-String -Pattern '\\b(alert|confirm|prompt)\\(' | ForEach-Object { \"$($_.Path):$($_.LineNumber): $($_.Line.Trim())\" }; 'done'"
+		},
+		{
+			"label": "find-native-dialogs-2",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.tsx,*.ts -Path app,components,hooks,lib | Select-String -Pattern '\\b(alert|confirm|prompt)\\(' | ForEach-Object { \"$($_.Path):$($_.LineNumber): $($_.Line.Trim())\" } | Out-File -Encoding utf8 $env:TEMP\\native-dialogs.txt; 'done'"
+		},
+		{
+			"label": "find-native-dialogs-3",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.tsx,*.ts -Path app,components,hooks,lib | Select-String -Pattern '\\b(alert|confirm|prompt)\\(' | ForEach-Object { \"$($_.Path):$($_.LineNumber): $($_.Line.Trim())\" } | Out-File -Encoding utf8 .tmp-native-dialogs.txt; 'done'"
+		},
+		{
+			"label": "find-native-dialogs-4",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.tsx,*.ts -Path app,components,hooks,lib | Select-String -Pattern '\\b(alert|confirm|prompt)\\(' | Select-Object Path,LineNumber,Line | Format-List | Out-File -Encoding utf8 .tmp-native-dialogs.txt; 'done'"
+		},
+		{
+			"label": "css-scan-1",
+			"type": "shell",
+			"command": "Select-String -Path app\\globals.css -Pattern 'border-light|@keyframes|--mentor|\\.dark|prefers-reduced' | Select-Object LineNumber,Line | Format-List | Out-File -Encoding utf8 .tmp-css.txt; 'done'"
+		},
+		{
+			"label": "css-scan-2",
+			"type": "shell",
+			"command": "Select-String -Path app\\globals.css,components\\mentor-ui.css -Pattern 'border-light|travel|conic|@property|mentor-nav|prefers-reduced|\\.dark' | Select-Object Path,LineNumber,Line | Format-List | Out-File -Encoding utf8 .tmp-css2.txt; 'done'"
+		},
+		{
+			"label": "css-scan-3",
+			"type": "shell",
+			"command": "Select-String -Path app\\globals.css -Pattern 'border-light|border-spin|@property' | Select-Object LineNumber,Line | Format-List | Out-File -Encoding utf8 .tmp-css3.txt; 'done'"
+		},
+		{
+			"label": "css-scan-4",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.css,*.tsx -Path app,components | Select-String -Pattern 'border-light' | Select-Object -First 15 Path,LineNumber | Format-List | Out-File -Encoding utf8 .tmp-css4.txt; 'done'"
+		},
+		{
+			"label": "css-scan-5",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.tsx,*.ts,*.css -Path app,components | Select-String -Pattern 'landing.css|mentor-ui.css|glass-bg:' | Select-Object Path,LineNumber,Line | Format-List | Out-File -Encoding utf8 .tmp-css5.txt; 'done'"
+		},
+		{
+			"label": "mkdir-dialogs",
+			"type": "shell",
+			"command": "New-Item -ItemType Directory -Force components\\dialogs | Out-Null; 'done'"
+		},
+		{
+			"label": "sig-scan-1",
+			"type": "shell",
+			"command": "Select-String -Path components\\CourseRevisionPlanner.tsx,components\\CourseStudyPage.tsx -Pattern '^export default function|^function [A-Z]|^const [A-Z][A-Za-z]* = \\(' -Context 0,6 | Out-File -Encoding utf8 .tmp-sig.txt; 'done'"
+		},
+		{
+			"label": "sig-scan-2",
+			"type": "shell",
+			"command": "Select-String -Path components\\CourseRevisionPlanner.tsx,components\\CourseStudyPage.tsx -Pattern '^export default function' -Context 0,4 | Out-File -Encoding utf8 .tmp-sig.txt; 'done'"
+		},
+		{
+			"label": "lint-dialogs-1",
+			"type": "shell",
+			"command": "npx eslint components/dialogs components/Navbar.tsx components/CourseLibrary.tsx components/CourseFlashcardCenter.tsx components/CourseOutlineCenter.tsx components/CourseQuizCenter.tsx components/CourseRevisionPlanner.tsx components/CourseStudyPage.tsx components/DeleteBookButton.tsx app/layout.tsx 2>&1 | Out-File -Encoding utf8 .tmp-lint.txt; npx tsc --noEmit -p . 2>&1 | Select-String 'dialogs|Navbar|CourseLibrary|FlashcardCenter|OutlineCenter|QuizCenter|RevisionPlanner|StudyPage|DeleteBook|layout' | Out-File -Append -Encoding utf8 .tmp-lint.txt; Get-ChildItem -Recurse -Include *.tsx,*.ts -Path app,components,hooks,lib | Select-String -Pattern '\\b(alert|confirm|prompt)\\(' | Out-File -Append -Encoding utf8 .tmp-lint.txt; 'ALLDONE' | Out-File -Append .tmp-lint.txt"
+		},
+		{
+			"label": "cleanup-1",
+			"type": "shell",
+			"command": "Remove-Item .tmp-native-dialogs.txt,.tmp-css*.txt,.tmp-sig.txt,.tmp-lint.txt -ErrorAction SilentlyContinue; git status --short | Out-File -Encoding utf8 .tmp-status.txt; 'done'"
 		}
 	]
 }

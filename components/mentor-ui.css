@@ -28,6 +28,16 @@
   --navy-600: #1d4a35;
 }
 
+/* .border-light sets position: relative; the navbar must stay fixed. */
+.mentor-nav.border-light {
+  position: fixed;
+}
+
+.mentor-nav.border-light::before {
+  padding: 1px;
+  border-radius: 0;
+}
+
 .mentor-nav .nav-link-base {
   transition: color 160ms ease, background-color 160ms ease;
 }

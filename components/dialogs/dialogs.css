@@ -1,0 +1,269 @@
+/* Mentor dialog system. Reuses the .border-light travelling border from landing.css. */
+
+.mentor-dialog-root {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.mentor-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 18, 12, 0.6);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: mentor-dialog-fade 180ms ease both;
+}
+
+.mentor-dialog {
+  --dialog-accent: var(--gold);
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 1.25rem;
+  border: 1px solid var(--glass-border);
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--gold) 10%, transparent), transparent 60%),
+    color-mix(in srgb, var(--navy-800) 94%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    0 0 38px -14px color-mix(in srgb, var(--gold) 45%, transparent),
+    0 30px 60px -24px rgba(0, 0, 0, 0.55);
+  animation: mentor-dialog-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  outline: none;
+}
+
+.mentor-dialog[data-variant="danger"] {
+  --dialog-accent: #ef4444;
+}
+
+.mentor-dialog[data-variant="error"] {
+  --dialog-accent: #f87171;
+}
+
+.mentor-dialog[data-variant="warning"] {
+  --dialog-accent: #d4af37;
+}
+
+.mentor-dialog-root[data-closing="true"] .mentor-dialog {
+  animation: mentor-dialog-exit 170ms ease both;
+}
+
+.mentor-dialog-root[data-closing="true"] .mentor-dialog-backdrop {
+  animation: mentor-dialog-fade-out 170ms ease both;
+}
+
+.mentor-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.mentor-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.mentor-dialog-icon {
+  display: grid;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 0.875rem;
+  color: var(--dialog-accent);
+  background: color-mix(in srgb, var(--dialog-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dialog-accent) 40%, transparent);
+}
+
+.mentor-dialog-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.mentor-dialog-description {
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.mentor-dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mentor-dialog-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mentor-dialog-input {
+  width: 100%;
+  min-width: 0;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--navy-900) 60%, transparent);
+  color: var(--ink);
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.mentor-dialog-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+
+.mentor-dialog-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 25%, transparent);
+}
+
+.mentor-dialog-error {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+.mentor-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.mentor-dialog-btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.mentor-dialog-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.mentor-dialog-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.mentor-dialog-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mentor-dialog-btn-secondary {
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--ink);
+}
+
+.mentor-dialog-btn-secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+}
+
+.mentor-dialog-btn-primary {
+  border: 1px solid transparent;
+  background: var(--gold);
+  color: var(--navy-900);
+}
+
+.mentor-dialog-btn-primary:hover:not(:disabled) {
+  background: var(--gold-hover);
+  box-shadow: 0 8px 20px -10px var(--gold);
+}
+
+.mentor-dialog-btn-danger {
+  border: 1px solid transparent;
+  background: #dc2626;
+  color: #fff;
+}
+
+.mentor-dialog-btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+  box-shadow: 0 8px 20px -10px #ef4444;
+}
+
+@media (max-width: 480px) {
+  .mentor-dialog-form {
+    padding: 1.25rem;
+  }
+
+  .mentor-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .mentor-dialog-btn {
+    width: 100%;
+  }
+}
+
+@keyframes mentor-dialog-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mentor-dialog-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes mentor-dialog-enter {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes mentor-dialog-exit {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mentor-dialog,
+  .mentor-dialog-backdrop,
+  .mentor-dialog-root[data-closing="true"] .mentor-dialog,
+  .mentor-dialog-root[data-closing="true"] .mentor-dialog-backdrop {
+    animation: none;
+  }
+
+  .mentor-dialog-btn,
+  .mentor-dialog-input {
+    transition: none;
+  }
+
+  .mentor-dialog-btn:hover:not(:disabled) {
+    transform: none;
+  }
+}
