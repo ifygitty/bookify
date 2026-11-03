@@ -9,6 +9,7 @@ import {
     resolveFlashcardReviewReplay,
 } from "@/lib/flashcards";
 import { getOwnedDeck, isDuplicateKeyError } from "@/lib/flashcard-api";
+import { recordStudyActivity } from "@/lib/study-sessions.server";
 
 type RouteContext = { params: Promise<{ courseId: string; deckId: string; cardId: string }> };
 
@@ -97,6 +98,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             completedReview = { nextDueAt: next.dueAt };
         });
         if (!completedReview) throw new Error("The review was not saved.");
+        await recordStudyActivity({ userClerkId: userId, courseId, activity: "flashcard_review" });
         return NextResponse.json({ success: true, nextDueAt: completedReview.nextDueAt });
     } catch (error) {
         if (isDuplicateKeyError(error)) {

@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import ThemeProvider from "@/components/ThemeProvider";
 import DialogProvider from "@/components/dialogs/DialogProvider";
+import AccountProvider from "@/components/AccountProvider";
 import "./globals.css";
 import {Toaster} from "@/components/ui/sonner";
 
@@ -78,9 +79,11 @@ export default function RootLayout({
           >
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <DialogProvider>
-                <Navbar />
-                {children}
-                <Toaster />
+                <AccountProvider>
+                  <Navbar />
+                  {children}
+                  <Toaster />
+                </AccountProvider>
               </DialogProvider>
             </ThemeProvider>
           </body>

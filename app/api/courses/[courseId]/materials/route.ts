@@ -195,7 +195,7 @@ export async function POST(
         let visualProcessingMessage: string | undefined;
         if (isPdf) {
             try {
-                const visualExtraction = await extractPdfVisualContent(fileBuffer, openai);
+                const visualExtraction = await extractPdfVisualContent(fileBuffer, openai, { userClerkId: userId, courseId });
                 if (visualExtraction.analyzedPageCount > 0 || visualExtraction.skippedPageCount > 0) {
                     visualProcessingStatus =
                         visualExtraction.skippedPageCount > 0 ? "partial" : "complete";

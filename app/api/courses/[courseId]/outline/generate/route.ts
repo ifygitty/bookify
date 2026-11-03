@@ -9,6 +9,8 @@ import CourseOutline from "@/database/models/course-outline.model";
 import CourseOutlineDraft from "@/database/models/course-outline-draft.model";
 import CourseOutlineGeneration from "@/database/models/course-outline-generation.model";
 import { getOpenAIClient } from "@/lib/openai";
+import { trackAiUsage } from "@/lib/ai-usage.server";
+import { recordStudyActivity } from "@/lib/study-sessions.server";
 import { normalizeMaterialIds, resolveMaterialSelection } from "@/lib/course-chat-selection";
 import {
     generatedCourseOutlineSchema,
@@ -183,7 +185,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             ),
         ].join("\n\n");
 
-        const response = await openai.responses.parse({
+        const response = await trackAiUsage({ userClerkId: userId, courseId, operation: "outline_generation", model: "gpt-4.1-mini" }, () => openai.responses.parse({
             model: "gpt-4.1-mini",
             input: [
                 {
@@ -194,7 +196,8 @@ export async function POST(request: Request, { params }: RouteContext) {
             ],
             text: { format: zodTextFormat(generatedCourseOutlineSchema, "course_outline") },
             max_output_tokens: 8_000,
-        });
+        }));
+        await recordStudyActivity({ userClerkId: userId, courseId, activity: "outline" });
         const generated = response.output_parsed;
         if (!generated) {
             console.error("Course outline response did not contain valid structured output.", {

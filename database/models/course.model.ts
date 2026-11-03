@@ -33,6 +33,7 @@ const CourseSchema = new Schema(
 );
 
 CourseSchema.index({ clerkId: 1, slug: 1 }, { unique: true });
+CourseSchema.index({ createdAt: -1 });
 
 export type CourseMaterialRecord = {
     _id: Types.ObjectId;

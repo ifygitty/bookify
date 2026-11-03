@@ -22,6 +22,8 @@ import {
 } from "@/lib/course-chat-selection";
 import { extractCourseMaterialText } from "@/lib/extract-course-material-text";
 import { getOpenAIClient } from "@/lib/openai";
+import { trackAiUsage } from "@/lib/ai-usage.server";
+import { recordStudyActivity } from "@/lib/study-sessions.server";
 
 const MAX_GENERATIONS_PER_HOUR = 5;
 const MAX_TEMP_REFERENCE_FILE_SIZE = 10 * 1024 * 1024;
@@ -343,7 +345,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             ),
         );
         const requestQuiz = (quizPrompt: string) =>
-            getOpenAIClient().responses.parse({
+            trackAiUsage({ userClerkId: userId, courseId, operation: "quiz_generation", model: "gpt-4.1-mini" }, () => getOpenAIClient().responses.parse({
                 model: "gpt-4.1-mini",
                 input: [
                     {
@@ -363,7 +365,7 @@ export async function POST(request: Request, { params }: RouteContext) {
                 include: ["file_search_call.results"],
                 text: { format: zodTextFormat(generatedQuizSchema, "course_practice_quiz") },
                 max_output_tokens: outputTokenBudget,
-            });
+            }));
         let response = await requestQuiz(prompt);
         let generated = response.output_parsed;
         if (!generated) {
@@ -524,6 +526,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             status: "generated",
             answers: [],
         });
+        await recordStudyActivity({ userClerkId: userId, courseId, activity: "quiz_generated" });
 
         return NextResponse.json(
             {

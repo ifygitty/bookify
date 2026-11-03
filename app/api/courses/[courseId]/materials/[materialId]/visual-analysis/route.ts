@@ -110,7 +110,7 @@ export async function POST(
             throw new Error("The stored PDF could not be opened.");
         }
         const pdfBuffer = Buffer.from(await new Response(pdf.body).arrayBuffer());
-        const extraction = await extractPdfVisualContent(pdfBuffer, openai);
+        const extraction = await extractPdfVisualContent(pdfBuffer, openai, { userClerkId: userId, courseId });
         const processingStatus =
             extraction.skippedPageCount > 0
                 ? "partial"

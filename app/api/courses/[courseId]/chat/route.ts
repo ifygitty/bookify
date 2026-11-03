@@ -8,6 +8,8 @@ import CourseChatMessage, {
     type CourseCitation,
 } from "@/database/models/course-chat-message.model";
 import { getOpenAIClient } from "@/lib/openai";
+import { trackAiUsage } from "@/lib/ai-usage.server";
+import { recordStudyActivity } from "@/lib/study-sessions.server";
 import {
     getConversationKey,
     normalizeMaterialIds,
@@ -197,7 +199,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             .join("\n");
 
         const openai = getOpenAIClient();
-        const response = await openai.responses.create({
+        const response = await trackAiUsage({ userClerkId: userId, courseId, operation: "chat", model: "gpt-4.1-mini" }, () => openai.responses.create({
             model: "gpt-4.1-mini",
             stream: false,
             input: [
@@ -218,7 +220,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             ],
             include: ["file_search_call.results"],
             max_output_tokens: 1_500,
-        });
+        }));
 
         const answer = response.output_text.trim();
         if (!answer) {
@@ -255,6 +257,7 @@ export async function POST(request: Request, { params }: RouteContext) {
         ]);
 
         const turnCount = Math.floor(totalPreviousMessages / 2) + 1;
+        await recordStudyActivity({ userClerkId: userId, courseId, activity: "chat" });
         if (selectedMaterials.length === 1 && turnCount % MEMORY_UPDATE_INTERVAL === 0) {
             await updateLearningMemory(
                 course._id,
@@ -340,7 +343,7 @@ async function updateLearningMemory(
     recentConversation: string[],
 ) {
     try {
-        const response = await getOpenAIClient().responses.create({
+        const response = await trackAiUsage({ userClerkId: userId, courseId: courseId.toString(), operation: "chat_memory_update", model: "gpt-4.1-mini" }, () => getOpenAIClient().responses.create({
             model: "gpt-4.1-mini",
             stream: false,
             input: [
@@ -358,7 +361,7 @@ async function updateLearningMemory(
                 },
             ],
             max_output_tokens: 200,
-        });
+        }));
 
         await Course.updateOne(
             { _id: courseId, clerkId: userId, "materials._id": material._id },

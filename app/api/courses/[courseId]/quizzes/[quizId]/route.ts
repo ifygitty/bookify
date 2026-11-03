@@ -19,6 +19,8 @@ import {
     writtenEvaluationSchema,
 } from "@/lib/course-quiz";
 import { getOpenAIClient } from "@/lib/openai";
+import { trackAiUsage } from "@/lib/ai-usage.server";
+import { recordStudyActivity } from "@/lib/study-sessions.server";
 
 type RouteContext = { params: Promise<{ courseId: string; quizId: string }> };
 const GRADING_CHUNK_SIZE = 4;
@@ -268,8 +270,9 @@ export async function POST(_request: Request, { params }: RouteContext) {
                     ),
                 );
             const gradeChunk = async (chunk: CourseQuizQuestionRecord[]) => {
-            const evaluationResponse = await getOpenAIClient().responses.parse({
-                model: process.env.OPENAI_GRADING_MODEL ?? "gpt-4.1",
+            const gradingModel = process.env.OPENAI_GRADING_MODEL ?? "gpt-4.1";
+            const evaluationResponse = await trackAiUsage({ userClerkId: userId, courseId, operation: "quiz_marking", model: gradingModel }, () => getOpenAIClient().responses.parse({
+                model: gradingModel,
                 temperature: 0,
                 input: [
                     {
@@ -323,7 +326,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
                     : {}),
                 text: { format: zodTextFormat(writtenEvaluationSchema, "quiz_answer_evaluations") },
                 max_output_tokens: 12_000,
-            });
+            }));
             const evaluation = evaluationResponse.output_parsed;
             if (!evaluation) throw new Error("The answer evaluator returned invalid structured output.");
 
@@ -392,6 +395,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
             { new: true },
         );
         if (!completed) throw new Error("The quiz result could not be saved.");
+        await recordStudyActivity({ userClerkId: userId, courseId, activity: "quiz_submitted" });
 
         return NextResponse.json({ quiz: safeQuizResponse(completed) });
     } catch (error) {

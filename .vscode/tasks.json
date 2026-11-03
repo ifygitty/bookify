@@ -761,6 +761,57 @@
 			"label": "cleanup-1",
 			"type": "shell",
 			"command": "Remove-Item .tmp-native-dialogs.txt,.tmp-css*.txt,.tmp-sig.txt,.tmp-lint.txt -ErrorAction SilentlyContinue; git status --short | Out-File -Encoding utf8 .tmp-status.txt; 'done'"
+		},
+		{
+			"label": "scan-openai-a",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Include *.ts,*.tsx -Path app,lib,components,database,hooks | Select-String -Pattern 'getOpenAIClient|responses\\.(create|parse|stream)|chat\\.completions|embeddings\\.|vectorStores|files\\.create|auth\\(\\)|currentUser\\(' | ForEach-Object { $_.Path.Replace('C:\\Users\\USER\\testing bookified\\','') + ':' + $_.LineNumber + ': ' + $_.Line.Trim() } | Out-File -Encoding utf8 .tmp-scan-a.txt; 'done'"
+		},
+		{
+			"label": "chk-clerk-webhooks",
+			"type": "shell",
+			"command": "Test-Path node_modules\\@clerk\\nextjs\\dist\\types\\webhooks.d.ts | Out-File .tmp-chk.txt; (Get-Content node_modules\\@clerk\\nextjs\\package.json | Select-String '\"version\"|webhooks') | Out-File -Append .tmp-chk.txt; Get-Content node_modules\\@clerk\\nextjs\\dist\\types\\webhooks.d.ts | Out-File -Append .tmp-chk.txt; (Get-ChildItem node_modules\\@clerk\\backend\\dist\\api\\resources\\Webhooks.d.ts -ErrorAction SilentlyContinue | Out-String) | Out-File -Append .tmp-chk.txt; 'done'"
+		},
+		{
+			"label": "mkdirs-admin-1",
+			"type": "shell",
+			"command": "New-Item -ItemType Directory -Force app\\api\\webhooks\\clerk, app\\api\\me\\sync, app\\api\\profile, app\\api\\admin\\users\\backfill, app\\api\\admin\\overview, app\\admin\\users\\[userId], app\\admin\\usage, app\\admin\\courses, app\\admin\\activity, app\\(root)\\profile, components\\admin | Out-Null; Remove-Item proxy.ts.new -Force; 'done'"
+		},
+		{
+			"label": "mkdirs-admin-2",
+			"type": "shell",
+			"command": "New-Item -ItemType Directory -Force app\\api\\webhooks\\clerk, app\\api\\me\\sync, app\\api\\profile, app\\api\\admin\\users\\backfill, app\\api\\admin\\overview, app\\admin\\users\\[userId], app\\admin\\usage, app\\admin\\courses, app\\admin\\activity, app\\(root)\\profile, components\\admin | Out-Null; Remove-Item proxy.ts.new -Force; 'done'"
+		},
+		{
+			"label": "mkdirs-admin-3",
+			"type": "shell",
+			"command": "foreach ($p in 'app\\api\\webhooks\\clerk','app\\api\\me\\sync','app\\api\\profile','app\\api\\admin\\users\\backfill','app\\api\\admin\\overview','app\\admin\\usage','app\\admin\\courses','app\\admin\\activity','app\\admin\\users','components\\admin') { New-Item -ItemType Directory -Force -LiteralPath $p | Out-Null }; New-Item -ItemType Directory -Force -LiteralPath 'app\\admin\\users\\[userId]' | Out-Null; New-Item -ItemType Directory -Force -LiteralPath 'app\\(root)\\profile' | Out-Null; Test-Path -LiteralPath 'app\\admin\\users\\[userId]','app\\(root)\\profile','proxy.ts.new'"
+		},
+		{
+			"label": "mkdirs-admin-4",
+			"type": "shell",
+			"command": "$root = (Get-Location).Path; foreach ($p in 'app\\api\\webhooks\\clerk','app\\api\\me\\sync','app\\api\\profile','app\\api\\admin\\users\\backfill','app\\api\\admin\\overview','app\\admin\\usage','app\\admin\\courses','app\\admin\\activity','app\\admin\\users\\[userId]','app\\(root)\\profile','components\\admin') { [System.IO.Directory]::CreateDirectory((Join-Path $root $p)) | Out-Null }; [System.IO.File]::Exists((Join-Path $root 'proxy.ts.new')); [System.IO.Directory]::Exists((Join-Path $root 'app\\admin\\users\\[userId]'))"
+		},
+		{
+			"label": "list-routes-1",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Filter route.ts app\\api | ForEach-Object { $_.FullName.Replace((Get-Location).Path + '\\','') } | Out-File .tmp-routes.txt; Select-String -Path 'app\\api\\**\\*.ts' -Pattern 'FlashcardReview' -List -ErrorAction SilentlyContinue | ForEach-Object { $_.Path } | Out-File -Append .tmp-routes.txt; 'done'"
+		},
+		{
+			"label": "list-routes-2",
+			"type": "shell",
+			"command": "Get-ChildItem -Recurse -Filter route.ts app\\api | ForEach-Object { $_.FullName } | Out-File .tmp-routes.txt; 'done'"
+		},
+		{
+			"label": "tsc-admin-final-1",
+			"type": "shell",
+			"command": "npx tsc --noEmit -p . 2>&1 | Out-File -Encoding ascii .tmp-tsc-final.txt",
+			"group": "build"
+		},
+		{
+			"label": "tsc-admin-final-2",
+			"type": "shell",
+			"command": "npx tsc --noEmit -p . 2>&1 | Out-File -Encoding ascii .tmp-tsc-final.txt; Write-Output done"
 		}
 	]
 }

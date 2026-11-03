@@ -8,6 +8,7 @@ import { SignedIn, SignedOut, UserButton, useClerk, useUser } from "@clerk/nextj
 import { LogOut, Menu, X } from "lucide-react";
 import {cn} from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useAccount } from "@/components/AccountProvider";
 import "@/components/landing.css";
 import "@/components/mentor-ui.css";
 
@@ -30,7 +31,12 @@ const Navbar = () => {
     const { user, isSignedIn } = useUser();
     const { signOut } = useClerk();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const navItems = pathName === "/" || !isSignedIn ? publicNavItems : appNavItems;
+    const { isAdmin } = useAccount();
+    const baseItems = pathName === "/" || !isSignedIn ? publicNavItems : appNavItems;
+    const navItems =
+        isSignedIn && baseItems === appNavItems
+            ? [...appNavItems, { label: "Profile", href: "/profile" }, ...(isAdmin ? [{ label: "Admin", href: "/admin" }] : [])]
+            : baseItems;
 
     const isActive = (href: string) => {
         if (href.startsWith("/#")) return false;

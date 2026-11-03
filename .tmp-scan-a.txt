@@ -1,0 +1,95 @@
+﻿app\(root)\courses\[courseId]\page.tsx:15: const { userId } = await auth();
+app\(root)\courses\page.tsx:15: const { userId } = await auth();
+app\(root)\progress\page.tsx:8: const { userId } = await auth();
+app\(root)\page.tsx:30: const { userId } = await auth();
+app\api\courses\upload\route.ts:16: const { userId } = await auth();
+app\api\courses\[courseId]\chat\route.ts:10: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\chat\route.ts:48: const { userId } = await auth();
+app\api\courses\[courseId]\chat\route.ts:106: const { userId } = await auth();
+app\api\courses\[courseId]\chat\route.ts:199: const openai = getOpenAIClient();
+app\api\courses\[courseId]\chat\route.ts:200: const response = await openai.responses.create({
+app\api\courses\[courseId]\chat\route.ts:343: const response = await getOpenAIClient().responses.create({
+app\api\courses\[courseId]\flashcards\decks\[deckId]\cards\[cardId]\review\route.ts:16: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\decks\[deckId]\cards\[cardId]\route.ts:12: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\decks\[deckId]\cards\[cardId]\route.ts:78: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\decks\[deckId]\cards\route.ts:17: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\decks\[deckId]\route.ts:15: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\decks\[deckId]\route.ts:77: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\decks\[deckId]\route.ts:112: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\generate\route.ts:18: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\flashcards\generate\route.ts:25: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\generate\route.ts:97: const response = await getOpenAIClient().responses.parse({
+app\api\courses\[courseId]\flashcards\route.ts:13: const { userId } = await auth();
+app\api\courses\[courseId]\flashcards\route.ts:59: const { userId } = await auth();
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:7: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:17: const openai = getOpenAIClient();
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:19: await openai.vectorStores.files.delete(fileId, { vector_store_id: vectorStoreId });
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:34: const { userId } = await auth();
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:78: const openai = getOpenAIClient();
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:125: const visualFile = await openai.files.create({
+app\api\courses\[courseId]\materials\[materialId]\visual-analysis\route.ts:135: const indexed = await openai.vectorStores.files.createAndPoll(course.vectorStoreId, {
+app\api\courses\[courseId]\materials\[materialId]\route.ts:10: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\materials\[materialId]\route.ts:21: const { userId } = await auth();
+app\api\courses\[courseId]\materials\[materialId]\route.ts:67: const pdf = await getOpenAIClient().files.content(material.openAIFileId);
+app\api\courses\[courseId]\materials\[materialId]\route.ts:110: const { userId } = await auth();
+app\api\courses\[courseId]\materials\[materialId]\route.ts:138: const openai = getOpenAIClient();
+app\api\courses\[courseId]\materials\[materialId]\route.ts:144: await openai.vectorStores.files.delete(fileId, {
+app\api\courses\[courseId]\materials\route.ts:8: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\materials\route.ts:22: openai: ReturnType<typeof getOpenAIClient>,
+app\api\courses\[courseId]\materials\route.ts:28: await openai.vectorStores.files.delete(fileId, { vector_store_id: vectorStoreId });
+app\api\courses\[courseId]\materials\route.ts:44: const { userId } = await auth();
+app\api\courses\[courseId]\materials\route.ts:103: const openai = getOpenAIClient();
+app\api\courses\[courseId]\materials\route.ts:149: const uploadedFile = await openai.files.create({
+app\api\courses\[courseId]\materials\route.ts:161: const indexedFile = await openai.vectorStores.files.createAndPoll(courseVectorStoreId, {
+app\api\courses\[courseId]\materials\route.ts:209: const visualFile = await openai.files.create({
+app\api\courses\[courseId]\materials\route.ts:219: const visualIndex = await openai.vectorStores.files.createAndPoll(
+app\api\courses\[courseId]\materials\route.ts:312: await removeOpenAIFile(getOpenAIClient(), openAIFileId, indexedVectorStoreId);
+app\api\courses\[courseId]\materials\route.ts:321: await removeOpenAIFile(getOpenAIClient(), visualOpenAIFileId, indexedVectorStoreId);
+app\api\courses\[courseId]\outline\generate\route.ts:11: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\outline\generate\route.ts:34: const { userId } = await auth();
+app\api\courses\[courseId]\outline\generate\route.ts:131: const openai = getOpenAIClient();
+app\api\courses\[courseId]\outline\generate\route.ts:144: const page = await openai.vectorStores.search(course.vectorStoreId, {
+app\api\courses\[courseId]\outline\generate\route.ts:186: const response = await openai.responses.parse({
+app\api\courses\[courseId]\outline\topics\route.ts:30: const { userId } = await auth();
+app\api\courses\[courseId]\outline\route.ts:50: const { userId } = await auth();
+app\api\courses\[courseId]\outline\route.ts:83: const { userId } = await auth();
+app\api\courses\[courseId]\outline\route.ts:166: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\[quizId]\flashcards\route.ts:23: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\[quizId]\route.ts:21: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\quizzes\[quizId]\route.ts:108: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\[quizId]\route.ts:128: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\[quizId]\route.ts:200: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\[quizId]\route.ts:271: const evaluationResponse = await getOpenAIClient().responses.parse({
+app\api\courses\[courseId]\quizzes\route.ts:24: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\quizzes\route.ts:170: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\route.ts:216: const { userId } = await auth();
+app\api\courses\[courseId]\quizzes\route.ts:346: getOpenAIClient().responses.parse({
+app\api\courses\[courseId]\revision-plans\[planId]\tasks\[taskId]\route.ts:19: const { userId } = await auth();
+app\api\courses\[courseId]\revision-plans\[planId]\route.ts:31: const { userId } = await auth();
+app\api\courses\[courseId]\revision-plans\route.ts:31: const { userId } = await auth();
+app\api\courses\[courseId]\revision-plans\route.ts:65: const { userId } = await auth();
+app\api\courses\[courseId]\route.ts:18: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\[courseId]\route.ts:28: const { userId } = await auth();
+app\api\courses\[courseId]\route.ts:87: const { userId } = await auth();
+app\api\courses\[courseId]\route.ts:115: const openai = getOpenAIClient();
+app\api\courses\[courseId]\route.ts:122: await openai.vectorStores.files.delete(fileId, {
+app\api\courses\[courseId]\route.ts:137: await openai.vectorStores.delete(course.vectorStoreId);
+app\api\courses\route.ts:3: import { getOpenAIClient } from "@/lib/openai";
+app\api\courses\route.ts:15: const { userId } = await auth();
+app\api\courses\route.ts:49: const { userId } = await auth();
+app\api\courses\route.ts:82: const openai = getOpenAIClient();
+app\api\courses\route.ts:83: const vectorStore = await openai.vectorStores.create({ name: `Bookified course: ${name}` });
+app\api\courses\route.ts:109: await getOpenAIClient().vectorStores.delete(vectorStoreId);
+app\api\progress\route.ts:11: const { userId } = await auth();
+app\api\upload\route.ts:15: const { userId } = await auth();
+lib\actions\book.actions.ts:18: const { userId } = await auth();
+lib\actions\book.actions.ts:89: const { userId } = await auth();
+lib\actions\book.actions.ts:145: const { userId } = await auth();
+lib\actions\book.actions.ts:173: const { userId } = await auth();
+lib\openai.ts:5: export function getOpenAIClient() {
+lib\pdf-visual-content.ts:107: const response = await openai.responses.create({
+lib\subscription.server.ts:5: const { has, userId } = await auth();
+components\UploadForm.tsx:26: const { userId } = useAuth();
+components\VapiControls.tsx:16: const { isLoaded, isSignedIn } = useAuth();
+hooks\useSubscription.ts:7: const { has, isLoaded: isAuthLoaded } = useAuth();
+hooks\useVapi.ts:44: const { userId } = useAuth();

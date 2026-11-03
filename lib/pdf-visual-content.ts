@@ -1,6 +1,9 @@
 import { Canvas } from "@napi-rs/canvas";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import type OpenAI from "openai";
+import { trackAiUsage } from "@/lib/ai-usage.server";
+
+export type VisualUsageContext = { userClerkId: string; courseId?: string };
 
 const MAX_VISUAL_PAGES = 15;
 const MAX_PDF_PAGES_TO_SCAN = 300;
@@ -86,6 +89,7 @@ async function renderPage(page: PdfPage): Promise<Buffer> {
 async function analyzePageBatch(
     openai: OpenAI,
     pages: CandidatePage[],
+    usage?: VisualUsageContext,
 ): Promise<string> {
     const content = pages.flatMap((page) => [
         {
@@ -104,7 +108,7 @@ async function analyzePageBatch(
         },
     ]);
 
-    const response = await openai.responses.create({
+    const request = () => openai.responses.create({
         model: "gpt-4.1-mini",
         input: [
             {
@@ -126,6 +130,9 @@ async function analyzePageBatch(
         ],
         max_output_tokens: 4_000,
     });
+    const response = usage
+        ? await trackAiUsage({ ...usage, operation: "pdf_visual_analysis", model: "gpt-4.1-mini" }, request)
+        : await request();
 
     return response.output_text.trim();
 }
@@ -133,6 +140,7 @@ async function analyzePageBatch(
 export async function extractPdfVisualContent(
     file: Buffer,
     openai: OpenAI,
+    usage?: VisualUsageContext,
 ): Promise<PdfVisualExtraction> {
     const document = await pdfjs.getDocument({
         data: Uint8Array.from(file),
@@ -168,7 +176,7 @@ export async function extractPdfVisualContent(
         const extracted: string[] = [];
         for (let offset = 0; offset < candidates.length; offset += PAGE_BATCH_SIZE) {
             const batch = candidates.slice(offset, offset + PAGE_BATCH_SIZE);
-            const result = await analyzePageBatch(openai, batch);
+            const result = await analyzePageBatch(openai, batch, usage);
             const usefulContent = result
                 .replace(/^\s*NO_ADDITIONAL_VISUAL_CONTENT\s*$/gim, "")
                 .replace(/^Page \d+ [—-] visual notes\s*$/gim, "")

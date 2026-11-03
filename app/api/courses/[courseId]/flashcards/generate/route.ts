@@ -16,6 +16,8 @@ import {
 import { normalizeMaterialIds, resolveMaterialSelection } from "@/lib/course-chat-selection";
 import { isDuplicateKeyError } from "@/lib/flashcard-api";
 import { getOpenAIClient } from "@/lib/openai";
+import { trackAiUsage } from "@/lib/ai-usage.server";
+import { recordStudyActivity } from "@/lib/study-sessions.server";
 
 type RouteContext = { params: Promise<{ courseId: string }> };
 const MAX_TOPIC_LENGTH = 160;
@@ -94,7 +96,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             `Selected material source keys:\n${sourceKeys.map((source) => `- ${source.key}: ${source.title}`).join("\n")}`,
             "Each card must cite one or more exact source keys from the retrieved selected materials that support it. Do not cite a source based only on its title.",
         ].join("\n\n");
-        const response = await getOpenAIClient().responses.parse({
+        const response = await trackAiUsage({ userClerkId: userId, courseId, operation: "flashcard_generation", model: "gpt-4.1-mini" }, () => getOpenAIClient().responses.parse({
             model: "gpt-4.1-mini",
             input: [
                 {
@@ -112,7 +114,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             include: ["file_search_call.results"],
             text: { format: zodTextFormat(generatedFlashcardsSchema, "course_flashcards") },
             max_output_tokens: 6_000,
-        });
+        }));
         const parsed = response.output_parsed;
         if (!parsed) {
             return NextResponse.json({ error: "Mentor could not prepare valid flashcards. Please try again." }, { status: 502 });
@@ -171,6 +173,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             { _id: generation._id, clerkId: userId, courseId: course._id },
             { $set: { previewCards } },
         );
+        await recordStudyActivity({ userClerkId: userId, courseId, activity: "flashcards_generated" });
 
         return NextResponse.json({
             generationId: generation._id.toString(),

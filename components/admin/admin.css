@@ -1,0 +1,238 @@
+.admin-shell {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1024px) {
+    .admin-shell {
+        grid-template-columns: 14rem minmax(0, 1fr);
+    }
+}
+
+.admin-nav {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    scrollbar-width: thin;
+}
+
+@media (min-width: 1024px) {
+    .admin-nav {
+        flex-direction: column;
+        position: sticky;
+        top: 6.5rem;
+        align-self: start;
+        overflow: visible;
+    }
+}
+
+.admin-nav a,
+.admin-nav button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.7rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    transition: background 0.2s, color 0.2s;
+}
+
+.admin-nav a:hover,
+.admin-nav button:hover {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent-gold) 10%, transparent);
+}
+
+.admin-nav a[aria-current="page"] {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent-gold) 18%, transparent);
+}
+
+.admin-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+}
+
+.admin-grid-2 {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+    .admin-grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.admin-card {
+    border-radius: 1.1rem;
+    padding: 1rem 1.1rem;
+    min-width: 0;
+}
+
+.admin-card-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.admin-card-value {
+    margin-top: 0.35rem;
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+}
+
+.admin-card-note {
+    margin-top: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+}
+
+.admin-delta-up { color: #34d399; }
+.admin-delta-down { color: #f87171; }
+
+.admin-section-title {
+    margin: 1.75rem 0 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.admin-banner {
+    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--accent-gold) 45%, transparent);
+    background: color-mix(in srgb, var(--accent-gold) 10%, transparent);
+}
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.admin-chip {
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    border: 1px solid var(--glass-border);
+    transition: background 0.2s, color 0.2s;
+}
+
+.admin-chip:hover { color: var(--ink); }
+
+.admin-chip[aria-current="true"] {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent-gold) 20%, transparent);
+    border-color: var(--accent-gold);
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+    border-radius: 1.1rem;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 46rem;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.7rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--ink);
+}
+
+.admin-table th {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.admin-table th a:hover { color: var(--ink); }
+.admin-table td.num, .admin-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.admin-table tbody tr:hover { background: color-mix(in srgb, var(--accent-gold) 6%, transparent); }
+.admin-muted { color: var(--ink-soft); }
+
+.admin-badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent-gold) 22%, transparent);
+}
+
+.admin-chart {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 1.1rem;
+    min-width: 0;
+}
+
+.admin-chart-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+}
+
+.admin-chart-svg { width: 100%; height: auto; display: block; }
+.admin-grid-line { stroke: var(--glass-border); stroke-width: 1; stroke-dasharray: 3 4; }
+.admin-line { fill: none; stroke: var(--accent-gold); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+.admin-bar { fill: var(--accent-gold); opacity: 0.7; transition: opacity 0.15s; }
+.admin-bar-active { opacity: 1; }
+.admin-dot { fill: var(--accent-gold); stroke: var(--ink); stroke-width: 1.5; }
+.admin-axis-label { fill: var(--ink-soft); font-size: 10px; }
+.admin-chart-tip { margin-top: 0.35rem; min-height: 1.1rem; font-size: 0.78rem; color: var(--ink-soft); }
+.admin-empty { padding: 2.5rem 0; text-align: center; color: var(--ink-soft); font-size: 0.875rem; }
+
+.admin-bars { display: grid; gap: 0.7rem; }
+.admin-bars-row { display: grid; gap: 0.25rem; }
+.admin-bars-head { display: flex; justify-content: space-between; gap: 0.75rem; font-size: 0.82rem; color: var(--ink); }
+.admin-bars-track { height: 0.55rem; border-radius: 999px; background: color-mix(in srgb, var(--accent-gold) 12%, transparent); overflow: hidden; }
+.admin-bars-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--gold), var(--accent-gold)); }
+
+.admin-skeleton {
+    border-radius: 1.1rem;
+    min-height: 6rem;
+    background: linear-gradient(90deg, var(--glass-bg), color-mix(in srgb, var(--accent-gold) 10%, var(--glass-bg)), var(--glass-bg));
+    background-size: 200% 100%;
+    animation: admin-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes admin-shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-skeleton { animation: none; }
+}
+
+.admin-pager { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.9rem; font-size: 0.85rem; color: var(--ink-soft); }

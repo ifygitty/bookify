@@ -126,9 +126,9 @@ export default function HeroCarousel({ ctaLabel, ctaHref }: { ctaLabel: string; 
                                         <Sparkles className="size-3.5" />
                                         {slide.eyebrow}
                                     </p>
-                                    <Heading className="mt-3 text-balance text-3xl font-extrabold leading-tight text-[var(--ink)] sm:text-4xl lg:text-5xl">
+                                    {/* <Heading className="mt-3 text-balance text-3xl font-extrabold leading-tight text-[var(--ink)] sm:text-4xl lg:text-5xl">
                                         {slide.title}
-                                    </Heading>
+                                    </Heading> */}
                                     <p className="mt-3 text-sm leading-6 text-[var(--ink-soft)] sm:text-base sm:leading-7">{slide.description}</p>
                                     <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                                         <Link
