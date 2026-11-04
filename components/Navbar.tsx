@@ -54,16 +54,16 @@ const Navbar = () => {
                 <Link
                     href="/"
                     aria-label="Elio home"
-                    className="relative flex h-12 w-44 min-w-0 items-center overflow-hidden sm:w-48"
+                    className="relative flex h-10 w-32 min-w-0 items-center overflow-hidden"
                     onClick={() => setIsMobileMenuOpen(false)}
                 >
                     <Image
-                        src="/assets/Mainlogo.png"
+                        src="/assets/elio.png"
                         alt="Elio"
                         width={1920}
                         height={1080}
                         priority
-                        className="mentor-nav-logo h-auto w-full object-contain"
+                        className="mentor-nav-logo h-full w-full object-cover"
                     />
                 </Link>
 

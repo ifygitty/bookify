@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     description: "Everything you need to master your studies.",
   },
   icons: {
-    icon: "/assets/mainlogo-mark.svg",
-    apple: "/assets/mainlogo-mark.svg",
+    icon: "/assets/elio.png",
+    apple: "/assets/elio.png",
   },
 };
 
@@ -57,7 +57,7 @@ export const viewport: Viewport = {
 
 const clerkAppearance = {
   layout: {
-    logoImageUrl: "/assets/Mainlogo.png",
+    logoImageUrl: "/assets/elio.png",
   },
   variables: {
     colorPrimary: "var(--gold)",

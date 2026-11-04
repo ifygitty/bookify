@@ -225,8 +225,8 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 0.7rem;
-  color: var(--gold);
-  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  color: var(--accent-gold);
+  background: color-mix(in srgb, var(--accent-gold) 14%, transparent);
 }
 
 .ehv2-block strong,

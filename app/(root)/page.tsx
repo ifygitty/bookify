@@ -171,7 +171,9 @@ export default async function Page() {
             <footer className="border-t border-[var(--glass-border)] px-4 py-10 sm:px-6 lg:px-8">
                 <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                        <Image src="/assets/Mainlogo.png" alt="Elio" width={120} height={68} className="h-10 w-auto" />
+                        <div className="h-12 w-44 shrink-0 overflow-hidden rounded-lg bg-[#0d3d29]">
+                            <Image src="/assets/elio.png" alt="Elio" width={1920} height={1080} className="h-full w-full object-cover" />
+                        </div>
                         <p className="max-w-xs text-sm text-[var(--ink-soft)]">Your AI study companion for learning with confidence.</p>
                     </div>
                     <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--ink-soft)]">
