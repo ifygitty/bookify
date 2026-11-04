@@ -286,7 +286,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                 body: JSON.stringify({ materialIds: chatMaterialIds, message: cleanQuestion }),
             });
             const result = await response.json();
-            if (!response.ok) throw new Error(result.error || "Mentor could not answer.");
+            if (!response.ok) throw new Error(result.error || "Elio AI could not answer.");
 
             setMessages((previous) => [
                 ...previous,
@@ -296,7 +296,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
             setQuestion("");
         } catch (requestError) {
             console.error("Tutor request failed:", requestError);
-            setError(requestError instanceof Error ? requestError.message : "Mentor could not answer.");
+            setError(requestError instanceof Error ? requestError.message : "Elio AI could not answer.");
         } finally {
             setIsSending(false);
         }
@@ -359,7 +359,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                 <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                         <h1 className="bk-wrap text-2xl font-semibold tracking-tight">Materials</h1>
-                        <p className="mt-1 text-sm text-[var(--ink-soft)]">Choose which study materials Mentor AI, quizzes and flashcards use.</p>
+                        <p className="mt-1 text-sm text-[var(--ink-soft)]">Choose which study materials Elio AI, quizzes and flashcards use.</p>
                     </div>
                     <label className="btn-primary cursor-pointer justify-center">
                         {isUploading ? <LoaderCircle className="size-5 animate-spin" /> : <Upload className="size-5" />}
@@ -382,7 +382,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                     <FileText className="mx-auto mb-4 size-10 text-[#663820]" />
                     <h2 className="text-xl font-semibold">Add your first study material</h2>
                     <p className="mx-auto mt-2 max-w-lg text-[#3d485e]">
-                        Upload a PDF, Word document, or Excel spreadsheet.                         Mentor will use the selected material when answering.
+                        Upload a PDF, Word document, or Excel spreadsheet. Elio AI will use the selected material when answering.
                     </p>
                 </section>
             ) : (
@@ -565,7 +565,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                 <section className="m-auto max-w-md px-6 py-14 text-center">
                     <FolderOpen className="mx-auto mb-4 size-10 text-[var(--gold)]" />
                     <h2 className="text-xl font-semibold">Add study material to start chatting</h2>
-                    <p className="mt-2 text-sm text-[var(--ink-soft)]">Mentor answers using the study materials you upload.</p>
+                    <p className="mt-2 text-sm text-[var(--ink-soft)]">Elio AI answers using the study materials you upload.</p>
                     <button type="button" onClick={() => goToSection("materials")} className="btn-primary mx-auto mt-5">
                         <Upload className="size-5" />Go to Materials
                     </button>
@@ -574,9 +574,9 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                     <section className="flex min-h-0 flex-1 flex-col overflow-hidden">
                         <div className="shrink-0 border-b border-[var(--navy-border)] px-3 py-2 sm:px-5">
                             <div className="flex items-center gap-2">
-                                <span className="shrink-0 text-sm font-semibold text-[var(--ink)]">Mentor AI</span>
+                                <span className="shrink-0 text-sm font-semibold text-[var(--ink)]">Elio AI</span>
                                 <span className="hidden shrink-0 rounded-full border border-[var(--navy-border)] px-2 py-0.5 text-[10px] font-medium text-[var(--ink-soft)] sm:inline">
-                                    Mentor 0.1
+                                    Elio AI
                                 </span>
                                 <p className="shrink-0 text-xs font-semibold text-[var(--ink-soft)]">
                                     Using {chatMaterials.length} source{chatMaterials.length === 1 ? "" : "s"}
@@ -615,13 +615,13 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                             {isLoadingHistory ? (
                                 <div className="m-auto flex items-center gap-2 text-sm text-[#3d485e]">
                                     <LoaderCircle className="size-4 animate-spin" />
-                                    Loading your saved Mentor conversation...
+                                    Loading your saved Elio AI conversation...
                                 </div>
                             ) : messages.length === 0 ? (
                                 <div className="m-auto max-w-md text-center">
-                                    <h2 className="text-lg font-semibold">Ask Mentor what you would like to understand.</h2>
+                                    <h2 className="text-lg font-semibold">Ask Elio AI what you would like to understand.</h2>
                                     <p className="mt-2 text-sm leading-6 text-[#3d485e]">
-                                        Mentor can explain a topic, work through an example, summarize your materials, or help you practise.
+                                        Elio AI can explain a topic, work through an example, summarize your materials, or help you practise.
                                     </p>
                                 </div>
                             ) : (
@@ -676,7 +676,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                                 <div className="flex justify-start">
                                     <div className="flex items-center gap-2 rounded-2xl border border-[var(--navy-border)] bg-[var(--navy-700)] px-4 py-3 text-sm text-[var(--ink-soft)]">
                                         <LoaderCircle className="size-4 animate-spin" />
-                                        Mentor is searching the selected materials and preparing an explanation...
+                                        Elio AI is searching the selected materials and preparing an explanation...
                                     </div>
                                 </div>
                             )}
@@ -685,7 +685,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                         {error && <p role="alert" className="mx-auto mb-2 w-full max-w-3xl shrink-0 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
                         <form onSubmit={sendQuestion} className="mx-auto flex w-full max-w-3xl shrink-0 gap-2 border-t border-[var(--navy-border)] p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4">
-                            <label htmlFor="tutor-question" className="sr-only">Ask Mentor about selected materials</label>
+                            <label htmlFor="tutor-question" className="sr-only">Ask Elio AI about selected materials</label>
                             <textarea
                                 id="tutor-question"
                                 value={question}
@@ -698,7 +698,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                                 }}
                                 maxLength={4_000}
                                 rows={2}
-                                placeholder={`Ask Mentor about ${chatMaterials.length ? "the selected materials" : "select materials to start chatting"}...`}
+                                placeholder={`Ask Elio AI about ${chatMaterials.length ? "the selected materials" : "select materials to start chatting"}...`}
                                 disabled={isLoadingHistory || isSending || chatMaterials.length === 0 || isSelectionChanged}
                                 className="min-h-12 min-w-0 flex-1 resize-y rounded-xl border border-[#212a3b]/15 bg-[#fffdf8] px-4 py-3 text-sm leading-6 outline-none focus:border-[#663820] focus:ring-2 focus:ring-[#663820]/15 disabled:opacity-60"
                             />
@@ -713,7 +713,7 @@ export default function CourseStudyPage({ course }: { course: Course }) {
                         </form>
                         {memorySummary && (
                             <p className="mx-auto w-full max-w-3xl shrink-0 px-4 pb-2 text-xs text-[var(--ink-soft)]">
-                                Mentor remembers learning context for this material to personalize future explanations.
+                                Elio AI remembers learning context for this material to personalize future explanations.
                             </p>
                         )}
                     </section>

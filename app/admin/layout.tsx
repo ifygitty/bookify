@@ -7,7 +7,7 @@ import AdminNav from "@/components/admin/AdminNav";
 import { requireAdminPage } from "@/lib/admin.server";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Admin · Mentor", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
     await requireAdminPage();

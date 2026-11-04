@@ -22,9 +22,24 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Mentor",
-  description: "Your personal AI study companion for understanding course materials, practicing, and staying on track.",
-  applicationName: "Mentor",
+  metadataBase: new URL("https://elio.study"),
+  title: {
+    default: "Elio | Your AI study companion",
+    template: "%s | Elio",
+  },
+  description: "Bring your course materials together, learn with AI, practise with personalised questions and prepare for exams with confidence.",
+  applicationName: "Elio",
+  openGraph: {
+    type: "website",
+    siteName: "Elio",
+    title: "Elio | Your AI study companion",
+    description: "Everything you need to master your studies.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Elio | Your AI study companion",
+    description: "Everything you need to master your studies.",
+  },
   icons: {
     icon: "/assets/mainlogo-mark.svg",
     apple: "/assets/mainlogo-mark.svg",

@@ -30,7 +30,7 @@ const NAV_GROUPS: NavGroup[] = [
         id: "study",
         label: "Study",
         items: [
-            { label: "Mentor AI chat", icon: MessageSquare, section: "chat" },
+            { label: "Elio AI chat", icon: MessageSquare, section: "chat" },
             { label: "Materials", icon: FolderOpen, section: "materials" },
         ],
     },
@@ -58,7 +58,7 @@ const NAV_GROUPS: NavGroup[] = [
 ];
 
 export const SECTION_TITLES: Record<CourseSection, string> = {
-    chat: "Mentor AI chat",
+    chat: "Elio AI chat",
     materials: "Materials",
     outline: "Course outline",
     revision: "Revision plan",
@@ -295,7 +295,7 @@ export default function CourseWorkspaceNav({
                                         className="absolute left-0 top-0 h-12 w-auto max-w-none"
                                     />
                                 </span>
-                                <span className="text-sm font-bold tracking-wide text-[var(--ink)]">Mentor</span>
+                                <span className="text-sm font-bold tracking-wide text-[var(--ink)]">Elio</span>
                             </div>
                             <div className="flex items-start gap-2">
                             <p className="bk-wrap line-clamp-3 min-w-0 flex-1 py-2 text-sm font-semibold leading-snug text-[var(--ink)]">{courseName}</p>

@@ -812,6 +812,14 @@
 			"label": "tsc-admin-final-2",
 			"type": "shell",
 			"command": "npx tsc --noEmit -p . 2>&1 | Out-File -Encoding ascii .tmp-tsc-final.txt; Write-Output done"
+		},
+		{
+			"label": "elio brand search",
+			"type": "shell",
+			"command": "$files = Get-ChildItem -Recurse -File -Include *.tsx,*.ts,*.jsx,*.js,*.md,*.html,*.json,*.css -Exclude node_modules,.next; $files | Select-String -Pattern 'Mentor|mentor\\.study|Your personal AI study companion|Mentor AI|Ask Mentor|Learn with Mentor' -CaseSensitive:$false | ForEach-Object { \"{0}:{1}:{2}\" -f $_.Path, $_.LineNumber, $_.Line.Trim() } | Out-File -Encoding utf8 .tmp-elio-search.txt; Get-ChildItem -Name; git status --short; Get-ChildItem -Recurse -File -Filter AGENTS.md -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName; Write-Output SEARCH-DONE",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

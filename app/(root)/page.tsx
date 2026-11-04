@@ -1,19 +1,37 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { ArrowRight, BarChart3, BookOpenCheck, BrainCircuit, CalendarDays, FileText, Layers3, ListChecks, MessageSquareQuote, UploadCloud } from "lucide-react";
 import "@/components/landing.css";
-import HeroCarousel from "@/components/HeroCarousel";
+// import ElioHero from "@/components/ElioHero";
+import ElioHeroV2 from "@/components/ElioHeroV2";
 import LandingReveal from "@/components/LandingReveal";
 import ProductPreview from "@/components/ProductPreview";
 import { CagePattern, ConcentricCircles, FlowingCurves, GlowOrb, OrbitalRings } from "@/components/LandingDecor";
 import { connectToDatabase } from "@/database/mongoose";
 import Course from "@/database/models/course.model";
+import ElioHero from "@/components/ElioHero";
+
+export const metadata: Metadata = {
+    title: "Everything you need to master your studies",
+    description: "Bring your course materials together, learn with AI, practise with personalised questions and prepare for exams with confidence.",
+    alternates: {
+        canonical: "/",
+    },
+    openGraph: {
+        type: "website",
+        url: "https://elio.study",
+        siteName: "Elio",
+        title: "Everything you need to master your studies | Elio",
+        description: "Bring your course materials together, learn with AI, practise with personalised questions and prepare for exams with confidence.",
+    },
+};
 
 const features = [
     { icon: Layers3, title: "Organised course library", text: "Keep every course and its materials in one tidy place." },
-    { icon: FileText, title: "Multi-material learning", text: "Choose which materials Mentor uses to answer you." },
-    { icon: BrainCircuit, title: "Mentor AI tutor", text: "Ask questions and get explanations grounded in your materials." },
+    { icon: FileText, title: "Multi-material learning", text: "Choose which materials Elio uses to answer you." },
+    { icon: BrainCircuit, title: "Elio AI tutor", text: "Ask questions and get explanations grounded in your materials." },
     { icon: ListChecks, title: "Quizzes and practice", text: "Generate practice questions to test your understanding." },
     { icon: BookOpenCheck, title: "Flashcards", text: "Turn key ideas into cards and review them regularly." },
     { icon: CalendarDays, title: "Revision planner", text: "Build a schedule around your topics and exam date." },
@@ -22,32 +40,33 @@ const features = [
 
 const steps = [
     { icon: UploadCloud, title: "Upload your materials", text: "Add your study texts and notes to a course." },
-    { icon: BrainCircuit, title: "Learn with Mentor", text: "Chat, practise with quizzes and review flashcards." },
+    { icon: BrainCircuit, title: "Learn with Elio", text: "Chat, practise with quizzes and review flashcards." },
     { icon: CalendarDays, title: "Revise with a plan", text: "Follow a revision plan built from your topics." },
 ];
 
 export default async function Page() {
     const { userId } = await auth();
-    let hasUsedMentor = false;
+    let hasExistingCourse = false;
     if (userId) {
         await connectToDatabase();
-        hasUsedMentor = Boolean(await Course.exists({ clerkId: userId }));
+        hasExistingCourse = Boolean(await Course.exists({ clerkId: userId }));
     }
-    const ctaLabel = userId && hasUsedMentor ? "Continue Learning" : "Start Learning";
+    const ctaLabel = userId && hasExistingCourse ? "Continue Learning" : "Start Learning";
     const ctaHref = userId ? "/courses" : "/sign-up";
     const year = new Date().getFullYear();
 
     return (
         <main id="top" className="landing-root relative overflow-x-clip text-[var(--ink)]">
             <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28 lg:px-8">
-                <HeroCarousel ctaLabel={ctaLabel} ctaHref={ctaHref} />
+                {/* <ElioHero ctaLabel={ctaLabel} ctaHref={ctaHref} /> */}
+                <ElioHeroV2 ctaLabel={ctaLabel} ctaHref={ctaHref} />
             </section>
 
             <section className="relative px-4 py-16 sm:px-6 lg:px-8">
                 <LandingReveal className="landing-reveal">
                     <div className="mx-auto mb-10 max-w-2xl text-center">
                         <h2 className="text-3xl font-extrabold sm:text-4xl">Everything in one study workspace</h2>
-                        <p className="mt-3 text-[var(--ink-soft)]">A look at how Mentor brings your courses, AI tutor and practice together.</p>
+                        <p className="mt-3 text-[var(--ink-soft)]">A look at how Elio brings your courses, AI tutor and practice together.</p>
                     </div>
                     <ProductPreview />
                 </LandingReveal>
@@ -78,7 +97,7 @@ export default async function Page() {
                 <FlowingCurves className="inset-x-0 top-0 h-48 w-full opacity-60" />
                 <div className="relative mx-auto max-w-6xl">
                     <LandingReveal className="landing-reveal mb-10 text-center">
-                        <h2 className="text-3xl font-extrabold sm:text-4xl">How Mentor Works</h2>
+                        <h2 className="text-3xl font-extrabold sm:text-4xl">How Elio Works</h2>
                     </LandingReveal>
                     <ol className="grid gap-4 md:grid-cols-3">
                         {steps.map(({ icon: Icon, title, text }, i) => (
@@ -106,7 +125,7 @@ export default async function Page() {
                         <div>
                             <h2 className="text-3xl font-extrabold sm:text-4xl">Study with sources you trust</h2>
                             <p className="mt-3 leading-7 text-[var(--ink-soft)]">
-                                Mentor answers from the materials you select, so explanations, quizzes and revision plans stay relevant to your syllabus.
+                                Elio AI answers from the materials you select, so explanations, quizzes and revision plans stay relevant to your syllabus.
                             </p>
                         </div>
                         <ProductPreview />
@@ -152,8 +171,8 @@ export default async function Page() {
             <footer className="border-t border-[var(--glass-border)] px-4 py-10 sm:px-6 lg:px-8">
                 <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                        <Image src="/assets/Mainlogo.png" alt="Mentor" width={120} height={68} className="h-10 w-auto" />
-                        <p className="max-w-xs text-sm text-[var(--ink-soft)]">Your personal AI study companion.</p>
+                        <Image src="/assets/Mainlogo.png" alt="Elio" width={120} height={68} className="h-10 w-auto" />
+                        <p className="max-w-xs text-sm text-[var(--ink-soft)]">Your AI study companion for learning with confidence.</p>
                     </div>
                     <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--ink-soft)]">
                         <Link href="/#features" className="hover:text-[var(--ink)]">Features</Link>
@@ -162,7 +181,7 @@ export default async function Page() {
                         <Link href={userId ? "/courses" : "/sign-in"} className="hover:text-[var(--ink)]">{userId ? "My courses" : "Sign In"}</Link>
                     </nav>
                 </div>
-                <p className="mx-auto mt-6 max-w-7xl text-xs text-[var(--ink-soft)]">© {year} Mentor. All rights reserved.</p>
+                <p className="mx-auto mt-6 max-w-7xl text-xs text-[var(--ink-soft)]">© {year} Elio. All rights reserved.</p>
             </footer>
         </main>
     );

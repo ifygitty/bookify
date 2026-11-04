@@ -1,0 +1,205 @@
+.ehero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: min(680px, calc(100svh - 74px));
+  align-items: center;
+  justify-content: center;
+  overflow: clip;
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 5vw, 4rem);
+  border: 1px solid var(--glass-border);
+  border-radius: 2rem;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--gold) 11%, transparent), transparent 62%),
+    var(--navy-800);
+  text-align: center;
+}
+
+.ehero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ehero-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  border-radius: 50%;
+  animation: ehero-rotate var(--ehero-speed) linear infinite;
+}
+
+.ehero-orbit::after {
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px 3px color-mix(in srgb, var(--gold) 45%, transparent);
+  content: "";
+}
+
+.ehero-orbit-one {
+  --ehero-speed: 36s;
+  --ehero-angle: -14deg;
+  width: min(94%, 980px);
+  height: min(58%, 380px);
+  transform: translate(-50%, -50%) rotate(var(--ehero-angle));
+}
+
+.ehero-orbit-two {
+  --ehero-speed: 52s;
+  --ehero-angle: 12deg;
+  width: min(80%, 820px);
+  height: min(80%, 520px);
+  border-color: color-mix(in srgb, var(--gold) 18%, transparent);
+  animation-direction: reverse;
+  transform: translate(-50%, -50%) rotate(var(--ehero-angle));
+}
+
+.ehero-orbit-three {
+  --ehero-speed: 70s;
+  --ehero-angle: 70deg;
+  width: min(60%, 560px);
+  height: min(92%, 640px);
+  border-color: color-mix(in srgb, var(--gold) 14%, transparent);
+  transform: translate(-50%, -50%) rotate(var(--ehero-angle));
+}
+
+.ehero-copy {
+  display: flex;
+  max-width: 44rem;
+  flex-direction: column;
+  align-items: center;
+  animation: ehero-enter 780ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.ehero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  color: var(--gold);
+  background: var(--glass-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-root .ehero-copy h1 {
+  margin: 1.35rem 0 0;
+  color: var(--ink);
+  font-family: var(--font-ibm-plex-serif), Georgia, "Times New Roman", serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.landing-root .ehero-copy h1 em {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.ehero-description {
+  max-width: 36rem;
+  margin: 1.4rem 0 0;
+  color: var(--ink-soft);
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  line-height: 1.75;
+}
+
+.ehero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.ehero-button {
+  display: inline-flex;
+  min-height: 3.1rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 0.85rem;
+  padding: 0.8rem 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.ehero-button:hover {
+  transform: translateY(-2px);
+}
+
+.ehero-button-primary {
+  color: var(--navy-900);
+  background: var(--gold);
+}
+
+.ehero-button-primary:hover {
+  background: var(--gold-hover);
+}
+
+.ehero-button-secondary {
+  border: 1px solid var(--glass-border);
+  color: var(--ink);
+}
+
+.ehero-button-secondary:hover {
+  background: var(--navy-600);
+}
+
+@keyframes ehero-rotate {
+  from { transform: translate(-50%, -50%) rotate(var(--ehero-angle)); }
+  to { transform: translate(-50%, -50%) rotate(calc(var(--ehero-angle) + 360deg)); }
+}
+
+@keyframes ehero-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 640px) {
+  .ehero {
+    min-height: 0;
+    border-radius: 1.5rem;
+  }
+
+  .ehero-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .ehero-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ehero-copy,
+  .ehero-orbit {
+    animation: none;
+  }
+
+  .ehero-button {
+    transition: none;
+  }
+
+  .ehero-button:hover {
+    transform: none;
+  }
+}

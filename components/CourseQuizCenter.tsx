@@ -754,7 +754,7 @@ export default function CourseQuizCenter({
                                             {currentAnswer?.feedback}
                                         </p>
                                         {currentAnswer?.correctness === "uncertain" && (
-                                            <p className="mt-1 text-xs">Mentor was not fully confident marking this answer. Compare it with the model answer below.</p>
+                                            <p className="mt-1 text-xs">Elio AI was not fully confident marking this answer. Compare it with the model answer below.</p>
                                         )}
                                     </div>
                                     {currentAnswer?.criteria && currentAnswer.criteria.length > 0 && (

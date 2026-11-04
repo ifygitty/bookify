@@ -53,13 +53,13 @@ const Navbar = () => {
             <div className="wrapper navbar-height py-4 flex justify-between items-center">
                 <Link
                     href="/"
-                    aria-label="Mentor home"
+                    aria-label="Elio home"
                     className="relative flex h-12 w-44 min-w-0 items-center overflow-hidden sm:w-48"
                     onClick={() => setIsMobileMenuOpen(false)}
                 >
                     <Image
                         src="/assets/Mainlogo.png"
-                        alt="Mentor"
+                        alt="Elio"
                         width={1920}
                         height={1080}
                         priority

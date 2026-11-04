@@ -388,7 +388,7 @@ export async function POST(request: Request, { params }: RouteContext) {
                 outputTypes: response.output.map((item) => item.type),
             });
             return NextResponse.json(
-                { error: "Mentor could not prepare a valid quiz. Please try generating it again." },
+                { error: "Elio AI could not prepare a valid quiz. Please try generating it again." },
                 { status: 502 },
             );
         }
@@ -451,7 +451,7 @@ export async function POST(request: Request, { params }: RouteContext) {
                     responseId: response.id,
                 });
                 return NextResponse.json(
-                    { error: "Mentor could not prepare a valid quiz. Please try generating it again." },
+                    { error: "Elio AI could not prepare a valid quiz. Please try generating it again." },
                     { status: 502 },
                 );
             }

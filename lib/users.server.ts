@@ -29,7 +29,7 @@ export function extractClerkProfile(user: ClerkUserLike) {
         : (user.email_addresses ?? []).map((e) => ({ id: e.id, address: e.email_address }));
     const email = (emails.find((e) => e.id === primaryId) ?? emails[0])?.address ?? "";
     const named = `${firstName ?? ""} ${lastName ?? ""}`.trim();
-    const fullName = named || user.username || (email ? email.split("@")[0] : "") || "Mentor student";
+    const fullName = named || user.username || (email ? email.split("@")[0] : "") || "Elio student";
 
     return {
         email: email || `${user.id}@unknown.invalid`,

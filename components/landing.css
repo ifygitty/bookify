@@ -1,4 +1,4 @@
-/* Mentor landing page: glass surfaces, travelling border light, reveal and carousel motion. */
+/* Elio landing page: warm editorial surfaces, travelling border light and reveal motion. */
 
 html {
   scroll-behavior: smooth;
@@ -171,36 +171,9 @@ html {
   to { opacity: 1; transform: none; }
 }
 
-/* Hero carousel */
-.slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(3%);
-  transition: opacity 700ms ease, transform 700ms ease, visibility 0s linear 700ms;
-}
-
-.slide[data-active="true"] {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition: opacity 700ms ease, transform 700ms ease, visibility 0s;
-}
-
-.slide[data-before="true"] {
-  transform: translateX(-3%);
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  .slide,
-  .slide[data-active="true"] {
-    transition: none;
-    transform: none;
   }
 
   .landing-reveal[data-landing-enhanced="true"],

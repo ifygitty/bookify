@@ -48,7 +48,7 @@ export default async function CoursesPage() {
                         </p>
                         <h1 className="mentor-title text-4xl font-extrabold sm:text-5xl">My Courses</h1>
                         <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--ink-soft)]">
-                            Bring your course study materials together and learn with Mentor AI.
+                            Bring your course study materials together and learn with Elio AI.
                         </p>
                     </div>
                     <Link href="#create-course" className="mentor-cta w-full sm:w-fit">

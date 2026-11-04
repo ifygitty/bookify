@@ -4,7 +4,7 @@ import { CagePattern, GlowOrb, OrbitalRings } from "@/components/LandingDecor";
 const courseItems = [
     { icon: Layers3, label: "Course library" },
     { icon: FileText, label: "Materials" },
-    { icon: BrainCircuit, label: "Mentor AI" },
+    { icon: BrainCircuit, label: "Elio AI" },
     { icon: ListChecks, label: "Practice quiz" },
     { icon: BookOpen, label: "Flashcards" },
     { icon: BarChart3, label: "Study progress" },
@@ -23,7 +23,7 @@ export default function ProductPreview({ large = false }: { large?: boolean }) {
                     <span className="size-2.5 rounded-full bg-[var(--ink-soft)]/50" />
                     <span className="size-2.5 rounded-full bg-[var(--ink-soft)]/50" />
                     <span className="size-2.5 rounded-full bg-[var(--gold)]" />
-                    <p className="ml-2 truncate text-xs text-[var(--ink-soft)]">Mentor · Sample course workspace</p>
+                    <p className="ml-2 truncate text-xs text-[var(--ink-soft)]">Elio · Sample course workspace</p>
                 </div>
                 <div className="grid md:grid-cols-[11rem_1fr] lg:grid-cols-[11rem_1fr_15rem]">
                     <nav aria-label="Sample workspace navigation" className="hidden border-r border-[var(--glass-border)] p-3 md:block">
@@ -36,13 +36,13 @@ export default function ProductPreview({ large = false }: { large?: boolean }) {
                     </nav>
 
                     <div className="space-y-3 p-4 sm:p-5">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)]">Mentor AI conversation</p>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)]">Elio AI conversation</p>
                         <p className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-[var(--navy-600)] px-4 py-2.5 text-sm text-[var(--ink)]">
                             Explain the straight-line method using my selected materials.
                         </p>
                         <div className="max-w-[92%] rounded-2xl rounded-bl-md border border-[var(--glass-border)] px-4 py-3 text-sm leading-6 text-[var(--ink-soft)]">
                             <p className="font-semibold text-[var(--ink)]">Straight-line depreciation</p>
-                            <p className="mt-1">Mentor explains the idea step by step, with worked examples and a source reference from the materials you chose.</p>
+                            <p className="mt-1">Elio AI explains the idea step by step, with worked examples and a source reference from the materials you chose.</p>
                             <p className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-[var(--gold)]/10 px-2 py-1 text-xs text-[var(--gold)]">
                                 <FileText className="size-3" /> Source: your course material
                             </p>
