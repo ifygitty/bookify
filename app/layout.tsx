@@ -57,7 +57,7 @@ export const viewport: Viewport = {
 
 const clerkAppearance = {
   layout: {
-    logoImageUrl: "/assets/lunie.png",
+    logoImageUrl: "/assets/lunielogo.png",
   },
   variables: {
     colorPrimary: "var(--gold)",
