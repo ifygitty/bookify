@@ -388,7 +388,7 @@ export async function POST(request: Request, { params }: RouteContext) {
                 outputTypes: response.output.map((item) => item.type),
             });
             return NextResponse.json(
-                { error: "Elio AI could not prepare a valid quiz. Please try generating it again." },
+                { error: "Lunie AI could not prepare a valid quiz. Please try generating it again." },
                 { status: 502 },
             );
         }
@@ -451,7 +451,7 @@ export async function POST(request: Request, { params }: RouteContext) {
                     responseId: response.id,
                 });
                 return NextResponse.json(
-                    { error: "Elio AI could not prepare a valid quiz. Please try generating it again." },
+                    { error: "Lunie AI could not prepare a valid quiz. Please try generating it again." },
                     { status: 502 },
                 );
             }
@@ -566,7 +566,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             {
                 error:
                     status === 503
-                        ? "Mentor is temporarily unavailable. Please try again later."
+                        ? "Lunie AI is temporarily unavailable. Please try again later."
                         : status === 429
                           ? "Quiz generation is temporarily rate limited. Please try again later."
                           : "Could not generate a quiz right now. Please try again.",

@@ -8,8 +8,8 @@ export default function SignInPage() {
                 <div className="mb-6 text-center">
                     <div className="mx-auto mb-4 h-20 w-56 overflow-hidden rounded-xl bg-[#0d3d29]">
                         <Image
-                            src="/assets/elio.png"
-                            alt="Elio"
+                            src="/assets/lunie.png"
+                            alt="Previous logo"
                             width={1920}
                             height={1080}
                             priority
@@ -17,7 +17,7 @@ export default function SignInPage() {
                         />
                     </div>
                     <h1 className="text-2xl font-semibold text-[#212a3b]">Welcome back</h1>
-                    <p className="mt-2 text-sm text-[#3d485e]">Sign in to continue learning with Elio.</p>
+                    <p className="mt-2 text-sm text-[#3d485e]">Sign in to continue learning with Lunie.</p>
                 </div>
                 <SignIn
                     routing="path"

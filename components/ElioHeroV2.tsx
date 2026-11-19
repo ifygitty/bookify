@@ -9,7 +9,7 @@ type Props = {
 
 const leftBlocks = [
     { icon: BookOpenCheck, title: "Your course space", text: "Everything in one place" },
-    { icon: BrainCircuit, title: "Elio AI tutor", text: "Answers from your materials" },
+    { icon: BrainCircuit, title: "Lunie AI tutor", text: "Answers from your materials" },
 ];
 
 const rightBlocks = [

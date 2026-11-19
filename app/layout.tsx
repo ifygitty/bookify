@@ -22,27 +22,27 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://elio.study"),
+  metadataBase: new URL("https://lunie.study"),
   title: {
-    default: "Elio | Your AI study companion",
-    template: "%s | Elio",
+    default: "Lunie | Your AI study companion",
+    template: "%s | Lunie",
   },
   description: "Bring your course materials together, learn with AI, practise with personalised questions and prepare for exams with confidence.",
-  applicationName: "Elio",
+  applicationName: "Lunie",
   openGraph: {
     type: "website",
-    siteName: "Elio",
-    title: "Elio | Your AI study companion",
+    siteName: "Lunie",
+    title: "Lunie | Your AI study companion",
     description: "Everything you need to master your studies.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Elio | Your AI study companion",
+    title: "Lunie | Your AI study companion",
     description: "Everything you need to master your studies.",
   },
   icons: {
-    icon: "/assets/elio.png",
-    apple: "/assets/elio.png",
+    icon: "/assets/lunie.png",
+    apple: "/assets/lunie.png",
   },
 };
 
@@ -57,7 +57,7 @@ export const viewport: Viewport = {
 
 const clerkAppearance = {
   layout: {
-    logoImageUrl: "/assets/elio.png",
+    logoImageUrl: "/assets/lunie.png",
   },
   variables: {
     colorPrimary: "var(--gold)",

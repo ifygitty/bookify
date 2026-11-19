@@ -21,17 +21,17 @@ export const metadata: Metadata = {
     },
     openGraph: {
         type: "website",
-        url: "https://elio.study",
-        siteName: "Elio",
-        title: "Everything you need to master your studies | Elio",
+        url: "https://lunie.study",
+        siteName: "Lunie",
+        title: "Everything you need to master your studies | Lunie",
         description: "Bring your course materials together, learn with AI, practise with personalised questions and prepare for exams with confidence.",
     },
 };
 
 const features = [
     { icon: Layers3, title: "Organised course library", text: "Keep every course and its materials in one tidy place." },
-    { icon: FileText, title: "Multi-material learning", text: "Choose which materials Elio uses to answer you." },
-    { icon: BrainCircuit, title: "Elio AI tutor", text: "Ask questions and get explanations grounded in your materials." },
+    { icon: FileText, title: "Multi-material learning", text: "Choose which materials Lunie uses to answer you." },
+    { icon: BrainCircuit, title: "Lunie AI tutor", text: "Ask questions and get explanations grounded in your materials." },
     { icon: ListChecks, title: "Quizzes and practice", text: "Generate practice questions to test your understanding." },
     { icon: BookOpenCheck, title: "Flashcards", text: "Turn key ideas into cards and review them regularly." },
     { icon: CalendarDays, title: "Revision planner", text: "Build a schedule around your topics and exam date." },
@@ -40,7 +40,7 @@ const features = [
 
 const steps = [
     { icon: UploadCloud, title: "Upload your materials", text: "Add your study texts and notes to a course." },
-    { icon: BrainCircuit, title: "Learn with Elio", text: "Chat, practise with quizzes and review flashcards." },
+    { icon: BrainCircuit, title: "Learn with Lunie", text: "Chat, practise with quizzes and review flashcards." },
     { icon: CalendarDays, title: "Revise with a plan", text: "Follow a revision plan built from your topics." },
 ];
 
@@ -66,7 +66,7 @@ export default async function Page() {
                 <LandingReveal className="landing-reveal">
                     <div className="mx-auto mb-10 max-w-2xl text-center">
                         <h2 className="text-3xl font-extrabold sm:text-4xl">Everything in one study workspace</h2>
-                        <p className="mt-3 text-[var(--ink-soft)]">A look at how Elio brings your courses, AI tutor and practice together.</p>
+                        <p className="mt-3 text-[var(--ink-soft)]">A look at how Lunie brings your courses, AI tutor and practice together.</p>
                     </div>
                     <ProductPreview />
                 </LandingReveal>
@@ -97,7 +97,7 @@ export default async function Page() {
                 <FlowingCurves className="inset-x-0 top-0 h-48 w-full opacity-60" />
                 <div className="relative mx-auto max-w-6xl">
                     <LandingReveal className="landing-reveal mb-10 text-center">
-                        <h2 className="text-3xl font-extrabold sm:text-4xl">How Elio Works</h2>
+                        <h2 className="text-3xl font-extrabold sm:text-4xl">How Lunie Works</h2>
                     </LandingReveal>
                     <ol className="grid gap-4 md:grid-cols-3">
                         {steps.map(({ icon: Icon, title, text }, i) => (
@@ -125,7 +125,7 @@ export default async function Page() {
                         <div>
                             <h2 className="text-3xl font-extrabold sm:text-4xl">Study with sources you trust</h2>
                             <p className="mt-3 leading-7 text-[var(--ink-soft)]">
-                                Elio AI answers from the materials you select, so explanations, quizzes and revision plans stay relevant to your syllabus.
+                                Lunie AI answers from the materials you select, so explanations, quizzes and revision plans stay relevant to your syllabus.
                             </p>
                         </div>
                         <ProductPreview />
@@ -172,7 +172,7 @@ export default async function Page() {
                 <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
                         <div className="h-12 w-44 shrink-0 overflow-hidden rounded-lg bg-[#0d3d29]">
-                            <Image src="/assets/elio.png" alt="Elio" width={1920} height={1080} className="h-full w-full object-cover" />
+                            <Image src="/assets/lunie.png" alt="Previous logo" width={1920} height={1080} className="h-full w-full object-cover" />
                         </div>
                         <p className="max-w-xs text-sm text-[var(--ink-soft)]">Your AI study companion for learning with confidence.</p>
                     </div>
@@ -183,7 +183,7 @@ export default async function Page() {
                         <Link href={userId ? "/courses" : "/sign-in"} className="hover:text-[var(--ink)]">{userId ? "My courses" : "Sign In"}</Link>
                     </nav>
                 </div>
-                <p className="mx-auto mt-6 max-w-7xl text-xs text-[var(--ink-soft)]">© {year} Elio. All rights reserved.</p>
+                <p className="mx-auto mt-6 max-w-7xl text-xs text-[var(--ink-soft)]">© {year} Lunie. All rights reserved.</p>
             </footer>
         </main>
     );
