@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     description: "Everything you need to master your studies.",
   },
   icons: {
-    icon: "/assets/lunie.png",
-    apple: "/assets/lunie.png",
+    icon: "/assets/lunielogo.png",
+    apple: "/assets/lunielogo.png",
   },
 };
 
